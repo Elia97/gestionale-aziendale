@@ -68,3 +68,53 @@ Per creare tutto in un solo comando:
 ```bash
 php artisan make:model <nome_modello> -m -f -s
 ```
+
+### API Routes
+
+#### Setup iniziale API con Sanctum
+```bash
+php artisan install:api
+```
+
+- Installa Laravel Sanctum e pubblica le risorse necessarie (config, migration, routes).
+
+- Genera automaticamente il file routes/api.php con la configurazione di base.
+
+#### Definizione delle rotte API `(routes/api.php)`
+
+Rotte pubbliche per login/logout:
+
+```php
+use App\Http\Controllers\AuthController;
+
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+```
+
+Gruppi di rotte protette da middleware:
+
+```php
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('customers', CustomerController::class);
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('orders', OrderController::class);
+});
+```
+
+#### Creazione dei Controller API
+
+- Ogni controller segue il pattern RESTful (index, show, store, update, destroy).
+
+- Validazione delle richieste in entrata tramite `$request->validate()`.
+
+- Restituzione di risposte JSON coerenti con gli standard API.
+
+#### Autenticazione e gestione token
+
+- Nell' AuthController:
+
+    - `login()` genera un token personale con `$user->createToken('api-token')->plainTextToken`.
+
+    - `logout()` revoca il token corrente.
+
+- Gli header HTTP devono includere il token Bearer per accedere alle rotte protette.
