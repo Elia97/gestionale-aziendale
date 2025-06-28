@@ -1,23 +1,23 @@
-## Backend php
+## Backend PHP
 
 ### Analisi preliminare: cosa vogliamo modellare?
 
-- users (utenti con ruoli e permessi)
+-   users (utenti con ruoli e permessi)
 
-- customers (clienti aziendali)
+-   customers (clienti aziendali)
 
-- products (prodotti / articoli di magazzino)
+-   products (prodotti / articoli di magazzino)
 
-- orders (ordini effettuati dai clienti)
+-   orders (ordini effettuati dai clienti)
 
-- order_items (righe di dettaglio ordine)
+-   order_items (righe di dettaglio ordine)
 
-- warehouses (magazzini o sedi fisiche)
+-   warehouses (magazzini o sedi fisiche)
 
-- stocks (giacenze per prodotto e magazzino)
+-   stocks (giacenze per prodotto e magazzino)
 
 ### Sintesi delle tabelle e relazioni chiave
-   
+
 | Tabella     | Campi chiave                              | Descrizione                              |
 | ----------- | ----------------------------------------- | ---------------------------------------- |
 | users       | id, name, email, role                     | Gestione utenti (admin, operatore, ecc.) |
@@ -40,8 +40,8 @@
 | **Order**     | belongsTo Customer<br>belongsTo User<br>hasMany OrderItems |
 | **OrderItem** | belongsTo Order<br>belongsTo Product                       |
 
-
 ### Comandi Laravel per creare una nuova entità
+
 1. Creazione della migrazione
 
 ```bash
@@ -55,16 +55,19 @@ php artisan make:model <nome_modello>
 ```
 
 3. Creazione della factory
+
 ```bash
 php artisan make:factory <nome_modello>Factory --model=<nome_modello>
 ```
 
 4. Creazione del seeder
+
 ```bash
 php artisan make:seeder <nome_modello>Seeder
 ```
 
 Per creare tutto in un solo comando:
+
 ```bash
 php artisan make:model <nome_modello> -m -f -s
 ```
@@ -72,13 +75,14 @@ php artisan make:model <nome_modello> -m -f -s
 ### API Routes
 
 #### Setup iniziale API con Sanctum
+
 ```bash
 php artisan install:api
 ```
 
-- Installa Laravel Sanctum e pubblica le risorse necessarie (config, migration, routes).
+-   Installa Laravel Sanctum e pubblica le risorse necessarie (config, migration, routes).
 
-- Genera automaticamente il file routes/api.php con la configurazione di base.
+-   Genera automaticamente il file routes/api.php con la configurazione di base.
 
 #### Definizione delle rotte API `(routes/api.php)`
 
@@ -103,18 +107,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
 #### Creazione dei Controller API
 
-- Ogni controller segue il pattern RESTful (index, show, store, update, destroy).
+-   Ogni controller segue il pattern RESTful (index, show, store, update, destroy).
 
-- Validazione delle richieste in entrata tramite `$request->validate()`.
+-   Validazione delle richieste in entrata tramite `$request->validate()`.
 
-- Restituzione di risposte JSON coerenti con gli standard API.
+-   Restituzione di risposte JSON coerenti con gli standard API.
 
 #### Autenticazione e gestione token
 
-- Nell' AuthController:
+-   Nell' AuthController:
 
-    - `login()` genera un token personale con `$user->createToken('api-token')->plainTextToken`.
+    -   `login()` genera un token personale con `$user->createToken('api-token')->plainTextToken`.
 
-    - `logout()` revoca il token corrente.
+    -   `logout()` revoca il token corrente.
 
-- Gli header HTTP devono includere il token Bearer per accedere alle rotte protette.
+-   Gli header HTTP devono includere il token Bearer per accedere alle rotte protette.
