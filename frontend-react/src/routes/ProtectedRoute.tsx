@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from "@/hooks";
+import { useAppSelector } from "@/hooks/redux";
 import { selectAuth } from "@/store/slices/authSlice";
 
 export default function ProtectedRoute() {

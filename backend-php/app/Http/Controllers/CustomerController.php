@@ -12,7 +12,10 @@ class CustomerController extends Controller
     // Mostra la lista di tutti i clienti
     public function index(): JsonResponse
     {
-        $customers = Customer::all();
+        $customers = Customer::withCount(relations: 'orders')
+            ->withSum(relation: 'orders as total_spent', column: 'total')
+            ->get(columns: ['id', 'name', 'email', 'phone', 'address', 'created_at']);
+
         return response()->json(data: $customers);
     }
 

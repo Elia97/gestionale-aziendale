@@ -18,6 +18,12 @@ class Customer extends Model
         'address',
     ];
 
+    protected $casts = [
+        'orders_count' => 'integer',
+        'total_spent' => 'float',
+    ];
+
+
     public function orders(): HasMany
     {
         return $this->hasMany(related: Order::class);

@@ -1,7 +1,7 @@
 import type React from "react";
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useAppSelector } from "@/hooks";
+import { useAppSelector } from "@/hooks/redux";
 
 interface HeaderProps {
     setSidebarOpen: (open: boolean) => void;

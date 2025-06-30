@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\Category;
 
 class Product extends Model
 {
@@ -16,6 +17,11 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'category'
+    ];
+
+    protected $casts = [
+        'category' => Category::class,
     ];
 
     public function stocks(): HasMany

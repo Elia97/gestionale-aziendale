@@ -20,7 +20,15 @@ class ProductFactory extends Factory
             'code' => fake()->unique()->ean8(),
             'name' => fake()->word(),
             'description' => fake()->sentence(),
-            'price' => fake()->randomFloat(nbMaxDecimals: 2, min: 1, max: 1000)
+            'price' => fake()->randomFloat(nbMaxDecimals: 2, min: 1, max: 1000),
+            'category' => fake()->randomElement([
+                'informatica',
+                'accessori',
+                'monitor',
+                'storage',
+                'networking',
+                'audio'
+            ]),
         ];
     }
 }

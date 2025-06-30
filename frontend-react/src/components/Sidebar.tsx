@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Users, Package, ShoppingCart, Warehouse, BarChart3, Settings, LogOut, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch } from "@/hooks/redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "@/store/slices/authSlice";
 

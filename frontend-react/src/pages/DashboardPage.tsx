@@ -2,9 +2,9 @@ import type React from "react"
 import { Users, Package, ShoppingCart, Warehouse } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useAppSelector } from "@/hooks/redux"
 
 const mockStats = {
-    totalCustomers: 156,
     totalProducts: 89,
     pendingOrders: 23,
     totalWarehouses: 4,
@@ -23,6 +23,7 @@ const mockLowStock = [
 ]
 
 export default function Dashboard(): React.JSX.Element {
+    const { list: customers } = useAppSelector(state => state.customers);
     return (
         <div className="space-y-6">
             <div>
@@ -38,7 +39,7 @@ export default function Dashboard(): React.JSX.Element {
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{mockStats.totalCustomers}</div>
+                        <div className="text-2xl font-bold">{customers.length}</div>
                     </CardContent>
                 </Card>
 

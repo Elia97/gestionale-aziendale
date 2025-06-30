@@ -11,7 +11,7 @@ class ProductController extends Controller
     // Lista tutti i prodotti
     public function index(): JsonResponse
     {
-        $products = Product::all();
+        $products = Product::with('stocks')->get(['id', 'code', 'name', 'description', 'price', 'category', 'created_at']);
         return response()->json(data: $products);
     }
 
@@ -35,6 +35,7 @@ class ProductController extends Controller
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
             'price'       => 'required|numeric|min:0',
+            'category'    => 'required|in:informatica,accessori,monitor,storage,networking,audio', // Enum validation
         ]);
 
         $product = Product::create(attributes: $data);
@@ -56,6 +57,7 @@ class ProductController extends Controller
             'name'        => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
             'price'       => 'sometimes|required|numeric|min:0',
+            'category'    => 'sometimes|required|in:informatica,accessori,monitor,storage,networking,audio', // Enum validation
         ]);
 
         $product->update($data);
