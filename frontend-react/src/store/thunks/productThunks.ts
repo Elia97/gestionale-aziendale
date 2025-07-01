@@ -67,10 +67,10 @@ export const updateProduct = createAsyncThunk(
   "products/update",
   async (
     {
-      id,
+      productId,
       productData,
     }: {
-      id: number;
+      productId: number;
       productData: {
         code: string;
         name: string;
@@ -87,14 +87,17 @@ export const updateProduct = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(`http://localhost:8000/api/products/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(productData),
-      });
+      const res = await fetch(
+        `http://localhost:8000/api/products/${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(productData),
+        }
+      );
       if (!res.ok) throw new Error("Errore nell'aggiornamento prodotto");
       return await res.json();
     } catch (err: any) {

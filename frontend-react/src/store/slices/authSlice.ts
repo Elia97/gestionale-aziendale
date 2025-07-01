@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
-import { loginUser } from "../thunks/authThunks";
+import { loginUser, loadSession } from "../thunks/authThunks";
 
 // Definisci l'interfaccia dello stato auth
 interface User {
@@ -35,6 +35,8 @@ const authSlice = createSlice({
       state.token = null;
       state.error = null;
       state.loading = false;
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -49,11 +51,19 @@ const authSlice = createSlice({
           state.loading = false;
           state.user = action.payload.user;
           state.token = action.payload.token;
+          sessionStorage.setItem("token", action.payload.token);
+          sessionStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to login";
+      })
+      .addCase(loadSession.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.token = action.payload.token;
+          state.user = action.payload.user;
+        }
       });
   },
 });

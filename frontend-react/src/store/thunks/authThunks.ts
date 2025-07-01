@@ -32,3 +32,13 @@ export const loginUser = createAsyncThunk<
     return thunkAPI.rejectWithValue("Network error");
   }
 });
+
+// Async thunk per caricare user/token da sessionStorage
+export const loadSession = createAsyncThunk<{
+  user: User;
+  token: string;
+} | null>("auth/loadSession", async () => {
+  const token = sessionStorage.getItem("token");
+  const user = sessionStorage.getItem("user");
+  return token && user ? { token, user: JSON.parse(user) } : null;
+});

@@ -1,11 +1,13 @@
-import AddCustomerModal from "@/components/customers/AddCustomerModal";
-import EditCustomerModal from "@/components/customers/EditCustomerModal";
-import CustomersHeader from "@/components/customers/CustomersHeader"
-import CustomersStats from "@/components/customers/CustomersStats"
-import CustomersFilters from "@/components/customers/CustomersFilters";
-import DeleteCustomerModal from "@/components/customers/DeleteCustomerModal";
-import CustomersTable from "@/components/customers/CustomersTable";
 import { useCustomersLogic } from "@/hooks/customers";
+import {
+    CustomersHeader,
+    CustomersStats,
+    CustomersFilters,
+    CustomersTable,
+    AddCustomerModal,
+    EditCustomerModal,
+    DeleteCustomerModal
+} from "@/components/customers";
 
 export default function CustomersPage(): React.JSX.Element {
     const customersLogic = useCustomersLogic();

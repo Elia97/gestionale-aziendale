@@ -1,24 +1,24 @@
-import type React from "react";
-
-import AddProductModal from "@/components/products/AddProductModal";
-import EditProductModal from "@/components/products/EditProductModal";
-import ProductsTable from "@/components/products/ProductsTable";
-
 import { useProductsLogic } from "@/hooks/products";
-import ProductsHeader from "@/components/products/ProductsHeader";
-import ProductStats from "@/components/products/ProductsStats";
-import DeleteProductModal from "@/components/products/DeleteProductModal";
-import ProductsFilters from "@/components/products/ProductsFilters";
+import {
+    ProductsHeader,
+    ProductsStats,
+    ProductsFilters,
+    ProductsTable,
+    AddProductModal,
+    EditProductModal,
+    DeleteProductModal
+} from "@/components/products";
 
 
-export default function Products(): React.JSX.Element {
+export default function ProductsPage(): React.JSX.Element {
     const productsLogic = useProductsLogic();
+
     return (
         <div className="space-y-6">
             <ProductsHeader
                 handleAddProduct={productsLogic.handleAddProduct}
             />
-            <ProductStats
+            <ProductsStats
                 stats={productsLogic.stats}
             />
             <ProductsFilters

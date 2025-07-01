@@ -18,13 +18,34 @@ class OrderItem extends Model
         'price',
     ];
 
+    /**
+     * Relazioni
+     */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(related: Order::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(related: Product::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Attributi calcolati (appends)
+     */
+    protected $appends = [
+        'product_code',
+        'product_name',
+    ];
+
+    public function getProductCodeAttribute(): ?string
+    {
+        return $this->product?->code;
+    }
+
+    public function getProductNameAttribute(): ?string
+    {
+        return $this->product?->name;
     }
 }

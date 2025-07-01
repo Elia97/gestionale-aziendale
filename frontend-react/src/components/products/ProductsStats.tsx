@@ -11,7 +11,7 @@ interface ProductsStatsProps {
     };
 }
 
-const ProductStats: React.FC<ProductsStatsProps> = ({ stats }) => {
+const ProductsStats: React.FC<ProductsStatsProps> = ({ stats }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
@@ -59,4 +59,4 @@ const ProductStats: React.FC<ProductsStatsProps> = ({ stats }) => {
     );
 };
 
-export default ProductStats;
+export default ProductsStats;

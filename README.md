@@ -2,15 +2,15 @@
 
 - backend-php/
 
-  - API REST in PHP (Laravel o nativo)
+  - API REST in PHP (Laravel)
 
 - frontend-react/
 
-  - HTML + TS
+  - REACT + TS + SHADCN UI
 
 - database/
 
-  - Script SQL per SQL Server o DB2
+  - Script SQL per SQL Server e DB2
 
 - vba-excel/
 
@@ -21,4 +21,5 @@
   - Microservizio Java schedulato
 
 - docs/
+
   - Documentazione e diagrammi

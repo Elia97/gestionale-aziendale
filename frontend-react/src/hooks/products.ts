@@ -165,7 +165,7 @@ export function useProductsLogic() {
 
       if (selectedProduct) {
         await dispatch(
-          updateProduct({ id: selectedProduct.id, productData: data })
+          updateProduct({ productId: selectedProduct.id, productData: data })
         ).unwrap();
       } else {
         await dispatch(addProduct(data)).unwrap();
