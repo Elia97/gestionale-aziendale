@@ -21,8 +21,8 @@ class OrderItemFactory extends Factory
         return [
             'order_id' => Order::inRandomOrder()->value(column: 'id'),
             'product_id' => Product::inRandomOrder()->value(column: 'id'),
-            'quantity' => fake()->numberBetween(int1: 1, int2: 10),
-            'price' => fake()->randomFloat(nbMaxDecimals: 2, min: 1, max: 100),
+            'quantity' => $this->faker->numberBetween(int1: 1, int2: 10),
+            'price' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 1, max: 100),
         ];
     }
 }

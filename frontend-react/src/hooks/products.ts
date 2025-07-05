@@ -32,7 +32,7 @@ export function useProductForm(
     setFormError("");
   };
 
-  const validateForm = (): Boolean => {
+  const validateForm = (): boolean => {
     if (!formData.code.trim())
       return setFormError("Il codice è obbligatorio"), false;
     if (!formData.name.trim())
@@ -65,7 +65,7 @@ export function useProductForm(
 
 export function useProductsLogic() {
   const dispatch = useAppDispatch();
-  const { list: products = [] } = useAppSelector((state) => state.products);
+  const products = useAppSelector((state) => state.products.list);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -163,20 +163,24 @@ export function useProductsLogic() {
     try {
       const data = { ...formData, price: Number(formData.price) };
 
-      if (selectedProduct) {
+      if (isEditModalOpen && selectedProduct) {
         await dispatch(
           updateProduct({ productId: selectedProduct.id, productData: data })
         ).unwrap();
+        setIsEditModalOpen(false);
       } else {
         await dispatch(addProduct(data)).unwrap();
+        setIsAddModalOpen(false);
       }
 
-      setIsAddModalOpen(false);
-      setIsEditModalOpen(false);
       resetForm();
       setSelectedProduct(null);
-    } catch (error: any) {
-      setFormError(error || "Errore durante il salvataggio.");
+    } catch (error: unknown) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Errore durante il salvataggio."
+      );
     } finally {
       setIsSaving(false);
     }

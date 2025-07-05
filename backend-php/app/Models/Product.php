@@ -22,6 +22,7 @@ class Product extends Model
 
     protected $casts = [
         'category' => Category::class,
+        'price' => 'decimal:2',
     ];
 
     public function stocks(): HasMany

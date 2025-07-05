@@ -10,7 +10,9 @@ import {
 } from "@/components/customers";
 
 export default function CustomersPage(): React.JSX.Element {
+
     const customersLogic = useCustomersLogic();
+
     return (
         <div className="space-y-6">
             <CustomersHeader

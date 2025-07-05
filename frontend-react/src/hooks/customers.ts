@@ -59,7 +59,7 @@ export function useCustomerForm(
 
 export function useCustomersLogic() {
   const dispatch = useAppDispatch();
-  const { list: customers } = useAppSelector((state) => state.customers);
+  const customers = useAppSelector((state) => state.customers.list);
 
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
@@ -141,8 +141,14 @@ export function useCustomersLogic() {
       setIsEditModalOpen(false);
       resetForm();
       setSelectedCustomer(null);
-    } catch (error: any) {
-      setFormError(error || "Errore durante il salvataggio.");
+    } catch (error: unknown) {
+      if (typeof error === "string") {
+        setFormError(error);
+      } else if (error instanceof Error) {
+        setFormError(error.message);
+      } else {
+        setFormError("Errore durante il salvataggio.");
+      }
     } finally {
       setIsSaving(false);
     }

@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
     const user = useAppSelector((state) => state.auth.user);
 
     if (!user) {
-        return null; // Non renderizzare l'header se l'utente non è autenticato
+        return null;
     }
 
     return (
@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
             </Button>
 
             <div className="flex items-center space-x-4">
-                <span className="text-sm text-zinc-600">Benvenuto, {user.name}</span>
+                <span className="text-sm text-zinc-600">Benvenuto, {user.firstName}</span>
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                     A
                 </div>

@@ -26,4 +26,24 @@ class Stock extends Model
     {
         return $this->belongsTo(related: Warehouse::class);
     }
+
+    public function getProductCodeAttribute(): ?string
+    {
+        return $this->product?->code;
+    }
+
+    public function getProductNameAttribute(): ?string
+    {
+        return $this->product?->name;
+    }
+
+    public function getProductPriceAttribute(): ?float
+    {
+        return $this->product?->price;
+    }
+
+    public function getWarehouseNameAttribute(): ?string
+    {
+        return $this->warehouse?->name;
+    }
 }

@@ -9,8 +9,8 @@ import {
     DeleteProductModal
 } from "@/components/products";
 
-
 export default function ProductsPage(): React.JSX.Element {
+
     const productsLogic = useProductsLogic();
 
     return (

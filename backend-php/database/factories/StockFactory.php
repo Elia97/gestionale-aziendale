@@ -46,7 +46,7 @@ class StockFactory extends Factory
         return [
             'product_id' => $pair[0],
             'warehouse_id' => $pair[1],
-            'quantity' => fake()->numberBetween(int1: 0, int2: 100),
+            'quantity' => $this->faker->numberBetween(int1: 0, int2: 100),
         ];
     }
 }

@@ -21,8 +21,8 @@ class OrderFactory extends Factory
         return [
             'customer_id' => Customer::inRandomOrder()->value(column: 'id'),
             'user_id' => User::inRandomOrder()->value(column: 'id'),
-            'status' => fake()->randomElement(array: ['pending', 'completed', 'cancelled']),
-            'total' => fake()->numberBetween(int1: 1000, int2: 100000) / 100,
+            'status' => $this->faker->randomElement(array: ['pending', 'completed', 'cancelled']),
+            'total' => $this->faker->numberBetween(int1: 1000, int2: 100000) / 100,
         ];
     }
 }

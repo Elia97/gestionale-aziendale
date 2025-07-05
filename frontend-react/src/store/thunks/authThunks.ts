@@ -1,11 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
+import type { User } from "../slices/authSlice";
 
 // Async thunk per il login
 export const loginUser = createAsyncThunk<
@@ -28,7 +22,7 @@ export const loginUser = createAsyncThunk<
 
     const data = await response.json();
     return { user: data.user, token: data.token };
-  } catch (error) {
+  } catch {
     return thunkAPI.rejectWithValue("Network error");
   }
 });

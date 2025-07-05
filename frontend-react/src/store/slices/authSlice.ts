@@ -4,10 +4,14 @@ import type { RootState } from "../index";
 import { loginUser, loadSession } from "../thunks/authThunks";
 
 // Definisci l'interfaccia dello stato auth
-interface User {
+export interface User {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  email_verified_at: string | null;
+  phone: string | null;
+  department: string | null;
   role: string;
 }
 

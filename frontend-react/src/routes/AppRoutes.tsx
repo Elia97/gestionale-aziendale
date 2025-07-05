@@ -8,6 +8,7 @@ import SettingsPage from "@/pages/SettingsPage"
 import LoginPage from "@/pages/LoginPage"
 import Layout from "@/components/Layout"
 import ProtectedRoute from "@/routes/ProtectedRoute"
+import { Toaster } from "sonner"
 
 export default function AppRoutes() {
     return (
@@ -25,6 +26,11 @@ export default function AppRoutes() {
                     </Route>
                 </Route>
             </Routes>
+            <Toaster
+                position="bottom-right"
+                richColors
+                closeButton
+            />
         </BrowserRouter>
     )
 }

@@ -1,10 +1,12 @@
+# FRONTEND
+
 ## 🧩 Architettura Redux Toolkit
 
 > Questa sezione descrive in modo sintetico come è organizzato lo **store Redux** nel frontend, seguendo un'architettura modulare e tipizzata (TypeScript) basata su Redux Toolkit.
 
 ---
 
-### 📦 Struttura delle cartelle
+### 📦 Struttura delle cartelle Redux Toolkit
 
 - **src/**
   - **store/**
@@ -16,9 +18,7 @@
 
 ---
 
-### 🧩 Step principali
-
-#### 1️⃣ Creazione degli slice
+### 1️⃣ Creazione degli slice
 
 - Ogni slice rappresenta una porzione indipendente dello stato globale.
 - Definizione:
@@ -26,13 +26,13 @@
   - Reducers per azioni sincrone
   - `extraReducers` per gestire le thunk asincrone
 
-#### 2️⃣ Creazione delle thunk asincrone
+### 2️⃣ Creazione delle thunk asincrone
 
 - Si usano createAsyncThunk per le chiamate API.
 
 - Possibile accedere allo stato globale tramite getState (es. per recuperare il token).
 
-#### 3️⃣ Configurazione dello store
+### 3️⃣ Configurazione dello store
 
 In `src/store/index.ts`:
 
@@ -57,7 +57,7 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 ```
 
-#### 4️⃣ Configurazione degli hook
+### 4️⃣ Configurazione degli hook
 
 In `src/hooks/redux.ts`:
 
@@ -73,7 +73,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 > Questa sezione descrive l’organizzazione del modulo frontend relativo a pagine, rotte e logiche dei componenti.
 > L’architettura è pensata per massimizzare la modularità, separare la logica dalla presentazione e garantire scalabilità grazie a React + TypeScript.
 
-### 📦 Struttura delle cartelle
+### 📦 Struttura delle cartelle delle pagine e delle rotte
 
 - **src/**
 
@@ -99,37 +99,35 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
   - **hooks/**
 
-    - customers.ts → Hook personalizzato useCustomersLogic che incapsula la logica dei clienti.
+    - customers.ts → `useCustomersLogic()`
 
-    - products.ts → Hook personalizzato useProductLogic che incapsula la logica dei prodotti.
+    - products.ts → `useProductLogic()`
 
-    - orders.ts → Hook personalizzato useOrdersLogic che incapsula la logica degli ordini.
+    - orders.ts → `useOrdersLogic()`
 
-    - warehouses.ts → Hook personalizzato useWarehousesLogic che incapsula la logica dei magazzini.
+    - warehouses.ts → `useWarehousesLogic()`
 
-  - _... altre cartelle (components, pages, utils, etc.)_
+  - _... altre cartelle (`components`, `pages`, `utils`, etc.)_
 
-### 🧩 Step principali
-
-#### 1️⃣ Definizione delle rotte
+### 1️⃣ Definizione delle rotte
 
 - In AppRoutes.tsx vengono dichiarate le rotte principali (es. /customers, /products, ecc.).
 
 - ProtectedRoutes.tsx funge da wrapper per controllare l’accesso alle rotte riservate, verificando lo stato di autenticazione.
 
-#### 2️⃣ Entry point delle pagine
+### 2️⃣ Entry point delle pagine
 
 - Ogni file in pages/ rappresenta l’entry point per una singola pagina.
 
 - Le pagine non contengono logica diretta, ma si occupano di:
 
-- Importare i componenti UI.
+  - Importare i componenti UI.
 
-- Importare gli hook che gestiscono la logica.
+  - Importare gli hook che gestiscono la logica.
 
-- Passare dati e callback ai componenti tramite props.
+  - Passare dati e callback ai componenti tramite props.
 
-#### 3️⃣ Logica separata tramite hook
+### 3️⃣ Logica separata tramite hook
 
 - Per ogni entità principale (es. clienti, prodotti) esiste un hook dedicato nella cartella hooks/ (es. useCustomersLogic).
 
@@ -145,10 +143,14 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
   - Gli hook vengono utilizzati nelle rispettive pagine per mantenere il codice dei componenti il più “dumb” possibile.
 
-#### 4️⃣ Composizione dei componenti
+### 4️⃣ Composizione dei componenti
 
 - Le pagine sono composte da componenti modulari:
 
-- Header, stats, filtri, tabelle, modali.
+  - Header
+  - Stats
+  - Filtri
+  - Tabelle
+  - Modali
 
 - I componenti ricevono solo dati e callback tramite props; non contengono logica interna complessa.

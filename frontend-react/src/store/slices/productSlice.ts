@@ -6,6 +6,7 @@ import {
   deleteProduct,
   updateProduct,
 } from "../thunks/productThunks";
+import type { Warehouse } from "./warehouseSlice";
 
 export interface Product {
   id: number;
@@ -24,6 +25,8 @@ export interface Stock {
   warehouse_id: number;
   warehouse_name: string;
   quantity: number;
+  product: Product;
+  warehouse: Warehouse;
 }
 
 interface ProductState {

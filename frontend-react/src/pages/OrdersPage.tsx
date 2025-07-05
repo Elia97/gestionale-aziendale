@@ -11,12 +11,17 @@ import {
 } from "@/components/orders"
 
 export default function OrdersPage(): React.JSX.Element {
+
     const ordersLogic = useOrdersLogic();
 
     return (
         <div className="space-y-6">
-            <OrdersHeader handleAddOrder={ordersLogic.handleAddOrder} />
-            <OrdersStats stats={ordersLogic.stats} />
+            <OrdersHeader
+                handleAddOrder={ordersLogic.handleAddOrder}
+            />
+            <OrdersStats
+                stats={ordersLogic.stats}
+            />
             <OrdersFilters
                 searchTerm={ordersLogic.searchTerm}
                 setSearchTerm={ordersLogic.setSearchTerm}

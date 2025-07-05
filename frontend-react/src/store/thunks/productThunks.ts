@@ -21,8 +21,12 @@ export const fetchProducts = createAsyncThunk(
 
       if (!res.ok) throw new Error("Errore nel caricamento prodotti");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -56,8 +60,12 @@ export const addProduct = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nell'aggiunta prodotto");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -100,8 +108,12 @@ export const updateProduct = createAsyncThunk(
       );
       if (!res.ok) throw new Error("Errore nell'aggiornamento prodotto");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -128,8 +140,12 @@ export const deleteProduct = createAsyncThunk(
       );
       if (!res.ok) throw new Error("Errore nella cancellazione prodotto");
       return productId;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );

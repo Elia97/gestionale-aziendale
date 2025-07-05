@@ -14,13 +14,27 @@ class StockSeeder extends Seeder
      */
     public function run(): void
     {
-        // Stocks for testing
-        Stock::factory()
-            ->count(count: 50)
-            ->create(attributes: fn(): array => [
-                'product_id' => Product::inRandomOrder()->value(column: 'id'),
-                'warehouse_id' => Warehouse::inRandomOrder()->value(column: 'id'),
-                'quantity' => rand(min: 1, max: 100),
-            ]);
+        $products = Product::pluck('id')->toArray();
+        $warehouses = Warehouse::pluck('id')->toArray();
+
+        $stocks = [];
+
+        foreach ($warehouses as $warehouseId) {
+            // Per ogni magazzino scegli 5–10 prodotti random
+            $selectedProducts = collect($products)->shuffle()->take(rand(5, 10));
+
+            foreach ($selectedProducts as $productId) {
+                $stocks[] = [
+                    'product_id' => $productId,
+                    'warehouse_id' => $warehouseId,
+                    'quantity' => rand(1, 100),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        // Inserisci tutti i record in una volta
+        Stock::insert($stocks);
     }
 }

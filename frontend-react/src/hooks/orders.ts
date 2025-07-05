@@ -58,8 +58,8 @@ export function useOrderForm() {
 
 export function useOrdersLogic() {
   const dispatch = useAppDispatch();
-  const { list: orders = [] } = useAppSelector((state) => state.orders);
-  const { list: products } = useAppSelector((state) => state.products);
+  const orders = useAppSelector((state) => state.orders.list);
+  const products = useAppSelector((state) => state.products.list);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -177,17 +177,21 @@ export function useOrdersLogic() {
   };
 
   // Aggiorna riga prodotto
-  const handleUpdateOrderItem = (index: number, field: string, value: any) => {
+  const handleUpdateOrderItem = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
     setOrderItems((prev) =>
       prev.map((item, i) => {
         if (i === index) {
           if (field === "product_id") {
             const product = products.find(
-              (p) => p.id === Number.parseInt(value)
+              (p) => p.id === Number.parseInt(value as string)
             );
             return {
               ...item,
-              product_id: Number.parseInt(value),
+              product_id: Number.parseInt(value as string),
               product_code: product?.code || "",
               product_name: product?.name || "",
               price: product?.price || 0,
@@ -236,7 +240,7 @@ export function useOrdersLogic() {
 
       resetForm();
       setSelectedOrder(null);
-    } catch (err) {
+    } catch {
       setError("Errore durante il salvataggio. Riprova.");
     } finally {
       setIsLoading(false);
@@ -251,7 +255,7 @@ export function useOrdersLogic() {
       await dispatch(deleteOrder(selectedOrder.id)).unwrap();
       setIsDeleteDialogOpen(false);
       setSelectedOrder(null);
-    } catch (err) {
+    } catch {
       setError("Errore durante l'eliminazione. Riprova.");
     } finally {
       setIsLoading(false);

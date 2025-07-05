@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(path: __DIR__))
     ->withRouting(
@@ -12,7 +13,8 @@ return Application::configure(basePath: dirname(path: __DIR__))
         health: '/up',
     )
     ->withMiddleware(callback: function (Middleware $middleware): void {
-        //
+        // Abilita CORS per le API
+        $middleware->prepend(HandleCors::class);
     })
     ->withExceptions(using: function (Exceptions $exceptions): void {
         //

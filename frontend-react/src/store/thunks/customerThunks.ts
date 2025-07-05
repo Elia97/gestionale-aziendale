@@ -21,8 +21,11 @@ export const fetchCustomers = createAsyncThunk(
 
       if (!res.ok) throw new Error("Errore nel caricamento clienti");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return thunkAPI.rejectWithValue(err.message);
+      }
+      return thunkAPI.rejectWithValue("Unknown error");
     }
   }
 );
@@ -56,8 +59,11 @@ export const addCustomer = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nell'aggiunta cliente");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return thunkAPI.rejectWithValue(err.message);
+      }
+      return thunkAPI.rejectWithValue("Unknown error");
     }
   }
 );
@@ -84,8 +90,11 @@ export const deleteCustomer = createAsyncThunk(
       );
       if (!res.ok) throw new Error("Errore nella cancellazione cliente");
       return customerId;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return thunkAPI.rejectWithValue(err.message);
+      }
+      return thunkAPI.rejectWithValue("Unknown error");
     }
   }
 );
@@ -125,8 +134,11 @@ export const updateCustomer = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nell'aggiornamento cliente");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return thunkAPI.rejectWithValue(err.message);
+      }
+      return thunkAPI.rejectWithValue("Unknown error");
     }
   }
 );

@@ -1,29 +1,43 @@
-import type React from "react"
+import { useEffect } from "react"
+import { useAppDispatch } from "@/hooks/redux"
 import { Users, Package, ShoppingCart, Warehouse } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useAppSelector } from "@/hooks/redux"
-
-const mockStats = {
-    totalProducts: 89,
-    pendingOrders: 23,
-    totalWarehouses: 4,
-}
-
-const mockRecentOrders = [
-    { id: 1, customer: "Acme Corp", total: 1250.0, status: "pending", date: "2024-01-15" },
-    { id: 2, customer: "Tech Solutions", total: 890.5, status: "completed", date: "2024-01-14" },
-    { id: 3, customer: "Global Industries", total: 2100.0, status: "processing", date: "2024-01-14" },
-]
-
-const mockLowStock = [
-    { id: 1, name: "Laptop Dell XPS", code: "DELL001", stock: 5, warehouse: "Magazzino A" },
-    { id: 2, name: "Mouse Wireless", code: "MSE001", stock: 2, warehouse: "Magazzino B" },
-    { id: 3, name: "Tastiera Meccanica", code: "KEY001", stock: 8, warehouse: "Magazzino A" },
-]
+import { fetchDashboardData } from "@/store/thunks/dashboardThunks"
+import type { Order } from "@/store/slices/orderSlice"
+import { useState } from "react"
+import type { Stock } from "@/store/slices/productSlice"
 
 export default function Dashboard(): React.JSX.Element {
-    const { list: customers } = useAppSelector(state => state.customers);
+    const [totalCustomers, setTotalCustomers] = useState(0)
+    const [totalProducts, setTotalProducts] = useState(0)
+    const [pendingOrders, setPendingOrders] = useState(0)
+    const [totalWarehouses, setTotalWarehouses] = useState(0)
+    const [recentOrders, setRecentOrders] = useState<Order[]>([])
+    const [lowStock, setLowStock] = useState<Stock[]>([])
+
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await dispatch(fetchDashboardData()).unwrap()
+                setTotalCustomers(result.totalCustomers)
+                setTotalProducts(result.totalProducts)
+                setPendingOrders(result.pendingOrders)
+                setTotalWarehouses(result.totalWarehouses)
+                setRecentOrders(result.recentOrders)
+                setLowStock(result.lowStock)
+            } catch (error) {
+                console.error("Errore nel caricamento dei dati del dashboard:", error)
+            }
+        }
+
+        fetchData()
+    }, [dispatch])
+
+    console.log(lowStock)
+
     return (
         <div className="space-y-6">
             <div>
@@ -39,7 +53,7 @@ export default function Dashboard(): React.JSX.Element {
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{customers.length}</div>
+                        <div className="text-2xl font-bold">{totalCustomers}</div>
                     </CardContent>
                 </Card>
 
@@ -49,7 +63,7 @@ export default function Dashboard(): React.JSX.Element {
                         <Package className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{mockStats.totalProducts}</div>
+                        <div className="text-2xl font-bold">{totalProducts}</div>
                     </CardContent>
                 </Card>
 
@@ -59,7 +73,7 @@ export default function Dashboard(): React.JSX.Element {
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{mockStats.pendingOrders}</div>
+                        <div className="text-2xl font-bold">{pendingOrders}</div>
                     </CardContent>
                 </Card>
 
@@ -69,7 +83,7 @@ export default function Dashboard(): React.JSX.Element {
                         <Warehouse className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{mockStats.totalWarehouses}</div>
+                        <div className="text-2xl font-bold">{totalWarehouses}</div>
                     </CardContent>
                 </Card>
             </div>
@@ -83,14 +97,17 @@ export default function Dashboard(): React.JSX.Element {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {mockRecentOrders.map((order) => (
+                            {recentOrders.map((order) => (
                                 <div key={order.id} className="flex items-center justify-between">
                                     <div>
-                                        <p className="font-medium">{order.customer}</p>
-                                        <p className="text-sm text-zinc-600">{order.date}</p>
+                                        <p className="font-medium">{order.customer_name}</p>
+                                        <p className="text-sm text-zinc-600">{order.created_at}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-medium">€{order.total.toFixed(2)}</p>
+                                        <p className="font-medium">€{typeof order.total === "number"
+                                            ? order.total.toLocaleString("it-IT", { minimumFractionDigits: 2 })
+                                            : Number(order.total || 0).toLocaleString("it-IT", { minimumFractionDigits: 2 })
+                                        }</p>
                                         <Badge
                                             variant={
                                                 order.status === "completed" ? "default" : order.status === "pending" ? "secondary" : "outline"
@@ -113,15 +130,15 @@ export default function Dashboard(): React.JSX.Element {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {mockLowStock.map((item) => (
+                            {lowStock.map((item) => (
                                 <div key={item.id} className="flex items-center justify-between">
                                     <div>
-                                        <p className="font-medium">{item.name}</p>
+                                        <p className="font-medium">{item.product.name}</p>
                                         <p className="text-sm text-zinc-600">
-                                            {item.code} - {item.warehouse}
+                                            {item.product.code} - {item.warehouse.name}
                                         </p>
                                     </div>
-                                    <Badge variant="destructive">{item.stock} rimasti</Badge>
+                                    <Badge variant="destructive">{item.quantity} rimasti</Badge>
                                 </div>
                             ))}
                         </div>
