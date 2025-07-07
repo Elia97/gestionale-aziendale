@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { User } from "../slices/authSlice";
+import type { RootState } from "../index";
 
 // Async thunk per il login
 export const loginUser = createAsyncThunk<
@@ -36,3 +37,27 @@ export const loadSession = createAsyncThunk<{
   const user = sessionStorage.getItem("user");
   return token && user ? { token, user: JSON.parse(user) } : null;
 });
+
+// Async thunk per l'aggiornamento delle informazioni utente
+export const updateUser = createAsyncThunk(
+    "user/update",
+    async (data: { firstName: string; lastName?: string | null; email: string, phone?: string | null }, { getState }) => {
+        const state = getState() as RootState;
+        const token = state.auth.token;
+
+        const response = await fetch("http://localhost:8000/api/users", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update user settings");
+        }
+
+        return await response.json();
+    }
+);

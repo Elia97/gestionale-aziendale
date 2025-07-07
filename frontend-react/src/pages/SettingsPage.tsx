@@ -13,8 +13,17 @@ import { toast } from "sonner"
 import { User, Bell, Shield, Database, Save, RefreshCw, AlertTriangle } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
 import { fetchUserSettings, updateUserSettings } from "@/store/thunks/userSettingsThunks"
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import type { UserSettings } from "@/store/slices/userSettingsSlice"
+import { updateUser } from "@/store/thunks/authThunks"
+
+type UserFieldKeys = 'firstName' | 'lastName' | 'email' | 'phone';
+type UserSettingsFieldKeys = 'language' | 'timezone' | 'emailNotifications' | 'pushNotifications' |
+    'smsNotifications' | 'orderUpdates' | 'stockAlerts' | 'systemMaintenance' |
+    'marketingEmails' | 'twoFactorAuth' | 'sessionTimeout' | 'passwordExpiry' |
+    'loginAttempts' | 'ipWhitelist' | 'currency' | 'dateFormat' | 'timeFormat' |
+    'backupFrequency' | 'maintenanceMode'
+
 
 export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState("user")
@@ -26,8 +35,40 @@ export default function SettingsPage() {
         register,
         handleSubmit,
         reset,
-        formState: { isSubmitting }
-    } = useForm<UserSettings>();
+        watch,
+        control,
+        formState: { isSubmitting, errors, dirtyFields }
+    } = useForm<UserSettings>({
+        defaultValues: {
+            user: {
+                firstName: "",
+                lastName: "",
+                email: "",
+                phone: "",
+                role: "Operator",
+                department: "IT"
+            },
+            language: "",
+            timezone: "",
+            emailNotifications: false,
+            pushNotifications: false,
+            smsNotifications: false,
+            orderUpdates: false,
+            stockAlerts: false,
+            systemMaintenance: false,
+            marketingEmails: false,
+            twoFactorAuth: false,
+            sessionTimeout: 30, // Default to 30 minutes
+            passwordExpiry: 90, // Default to 90 days
+            loginAttempts: 5, // Default to 5 attempts
+            ipWhitelist: "",
+            currency: "EUR", // Default to Euro
+            dateFormat: "DD/MM/YYYY", // Default to Italian format
+            timeFormat: "24h", // Default to 24-hour format
+            backupFrequency: "weekly", // Default to weekly backups
+            maintenanceMode: false // Default to maintenance mode off
+        }
+    });
 
     // Carica i dati all’avvio
     useEffect(() => {
@@ -37,14 +78,94 @@ export default function SettingsPage() {
     // Quando i dati arrivano, popola il form
     useEffect(() => {
         if (userSettings) {
-            reset(userSettings);
+            reset({
+                user: {
+                    firstName: user?.firstName || "",
+                    lastName: user?.lastName || "",
+                    email: user?.email || "",
+                    phone: user?.phone || "",
+                },
+                language: userSettings.language || "",
+                timezone: userSettings.timezone || "",
+                emailNotifications: Boolean(userSettings.emailNotifications) || false,
+                pushNotifications: Boolean(userSettings.pushNotifications) || false,
+                smsNotifications: Boolean(userSettings.smsNotifications) || false,
+                orderUpdates: Boolean(userSettings.orderUpdates) || false,
+                stockAlerts: Boolean(userSettings.stockAlerts) || false,
+                systemMaintenance: userSettings.systemMaintenance || false,
+                marketingEmails: userSettings.marketingEmails || false,
+                twoFactorAuth: userSettings.twoFactorAuth || false,
+                sessionTimeout: userSettings.sessionTimeout || 30,
+                passwordExpiry: userSettings.passwordExpiry || 90,
+                loginAttempts: userSettings.loginAttempts || 5,
+                ipWhitelist: userSettings.ipWhitelist || "",
+                currency: userSettings.currency || "EUR",
+                dateFormat: userSettings.dateFormat || "DD/MM/YYYY",
+                timeFormat: userSettings.timeFormat || "24h",
+                backupFrequency: userSettings.backupFrequency || "weekly",
+                maintenanceMode: Boolean(userSettings.maintenanceMode) || false
+            });
         }
-    }, [userSettings, reset]);
+    }, [userSettings, user, reset]);
 
     const onSubmit = async (data: UserSettings) => {
-
         try {
-            await dispatch(updateUserSettings(data)).unwrap();
+            // Controlla se ci sono modifiche nei campi user
+            const userFields: UserFieldKeys[] = ['firstName', 'lastName', 'email', 'phone'];
+            const isUserDirty = userFields.some(field => dirtyFields.user?.[field]);
+
+            // Controlla se ci sono modifiche nelle impostazioni
+            const settingsFields: UserSettingsFieldKeys[] = [
+                'language', 'timezone', 'emailNotifications', 'pushNotifications',
+                'smsNotifications', 'orderUpdates', 'stockAlerts', 'systemMaintenance',
+                'marketingEmails', 'twoFactorAuth', 'sessionTimeout', 'passwordExpiry',
+                'loginAttempts', 'ipWhitelist', 'currency', 'dateFormat', 'timeFormat',
+                'backupFrequency', 'maintenanceMode'
+            ];
+            const isSettingsDirty = settingsFields.some(field => dirtyFields[field]);
+
+            if (!isUserDirty && !isSettingsDirty) {
+                toast.info("Nessuna modifica da salvare");
+                return;
+            }
+
+            const userData = {
+                firstName: data.user.firstName,
+                lastName: data.user.lastName || null,
+                email: data.user.email,
+                phone: data.user.phone || null
+            };
+
+            const userSettingsData = {
+                language: data.language,
+                timezone: data.timezone,
+                emailNotifications: data.emailNotifications,
+                pushNotifications: data.emailNotifications,
+                smsNotifications: data.emailNotifications,
+                orderUpdates: data.emailNotifications,
+                stockAlerts: data.emailNotifications,
+                systemMaintenance: data.emailNotifications,
+                marketingEmails: data.emailNotifications,
+                twoFactorAuth: data.emailNotifications,
+                sessionTimeout: data.sessionTimeout,
+                passwordExpiry: data.passwordExpiry,
+                loginAttempts: data.loginAttempts,
+                ipWhitelist: data.ipWhitelist,
+                currency: data.currency,
+                dateFormat: data.dateFormat,
+                timeFormat: data.timeFormat,
+                backupFrequency: data.backupFrequency,
+                maintenanceMode: data.maintenanceMode,
+            }
+
+            // Effettua le chiamate in parallelo o in sequenza
+            if (isUserDirty) {
+                await dispatch(updateUser(userData)).unwrap();
+            }
+            if (isSettingsDirty) {
+                await dispatch(updateUserSettings(userSettingsData)).unwrap();
+            }
+
             toast.success("Impostazioni aggiornate con successo");
         } catch {
             toast.error("Errore durante l'aggiornamento delle impostazioni");
@@ -53,6 +174,10 @@ export default function SettingsPage() {
 
     if (!user) {
         return <div className="p-6">Devi essere autenticato per accedere alle impostazioni.</div>
+    }
+
+    if (!userSettings) {
+        return <div className="p-6">Caricamento impostazioni...</div>;
     }
 
     return (
@@ -96,23 +221,38 @@ export default function SettingsPage() {
                                         <Label htmlFor="first-name">Nome</Label>
                                         <Input
                                             id="first-name"
-                                            value={user.firstName}
+                                            className={errors.user?.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
                                             {...register("user.firstName", {
                                                 required: "Il nome è obbligatorio",
-                                                maxLength: { value: 50, message: "Il nome non può superare i 50 caratteri" }
+                                                maxLength: { value: 50, message: "Il nome non può superare i 50 caratteri" },
+                                                validate: (value) => {
+                                                    if (!/^[a-zA-Z\s]+$/.test(value)) {
+                                                        return "Il nome può contenere solo lettere e spazi";
+                                                    }
+                                                }
                                             })}
                                         />
+                                        {errors.user?.firstName && (
+                                            <p className="text-red-500 text-sm">{errors.user.firstName.message}</p>
+                                        )}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="last-name">Cognome</Label>
                                         <Input
                                             id="last-name"
-                                            value={user.lastName}
+                                            className={errors.user?.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
                                             {...register("user.lastName", {
-                                                required: "Il cognome è obbligatorio",
-                                                maxLength: { value: 50, message: "Il cognome non può superare i 50 caratteri" }
+                                                maxLength: { value: 50, message: "Il cognome non può superare i 50 caratteri" },
+                                                validate: (value) => {
+                                                    if (!/^[a-zA-Z\s]+$/.test(value)) {
+                                                        return "Il cognome può contenere solo lettere e spazi";
+                                                    }
+                                                }
                                             })}
                                         />
+                                        {errors.user?.lastName && (
+                                            <p className="text-red-500 text-sm">{errors.user.lastName.message}</p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
@@ -121,7 +261,7 @@ export default function SettingsPage() {
                                         <Input
                                             id="user-email"
                                             type="email"
-                                            value={user.email}
+                                            className={errors.user?.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                                             {...register("user.email", {
                                                 required: "L'email è obbligatoria",
                                                 pattern: {
@@ -130,118 +270,121 @@ export default function SettingsPage() {
                                                 }
                                             })}
                                         />
+                                        {errors.user?.email && (
+                                            <p className="text-red-500 text-sm">{errors.user.email.message}</p>
+                                        )}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="user-phone">Telefono</Label>
                                         <Input
                                             id="user-phone"
-                                            value={user.phone || ""}
+                                            className={errors.user?.phone ? "border-red-500 focus-visible:ring-red-500" : ""}
                                             {...register("user.phone", {
                                                 pattern: {
                                                     value: /^\+?[0-9\s-]{7,}$/,
                                                     message: "Inserisci un numero di telefono valido"
+                                                },
+                                                validate: (value) => {
+                                                    if (value && !/^\+?[0-9\s-]{7,}$/.test(value)) {
+                                                        return "Il numero di telefono deve contenere almeno 7 cifre";
+                                                    }
                                                 }
                                             })}
                                         />
+                                        {errors.user?.phone && (
+                                            <p className="text-red-500 text-sm">{errors.user.phone.message}</p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="role">Ruolo</Label>
-                                        <Select
-                                            value={user.role}
-                                            {...register("user.role", {
-                                                required: "Il ruolo è obbligatorio",
-                                                validate: (value) => {
-                                                    if (!["Administrator", "Operator"].includes(value)) {
-                                                        return "Seleziona un ruolo valido";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Administrator">Amministratore</SelectItem>
-                                                <SelectItem value="Operatore">Operatore</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <Controller
+                                            name="user.role"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input {...field} value={field.value ?? ""} disabled />
+                                            )}
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="department">Dipartimento</Label>
-                                        <Select
-                                            value={user.department || ""}
-                                            {...register("user.department", {
-                                                required: "Il dipartimento è obbligatorio",
-                                                validate: (value) => {
-                                                    if (!["IT", "Produzione", "Logistica"].includes(value ?? "")) {
-                                                        return "Seleziona un dipartimento valido";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="IT">IT</SelectItem>
-                                                <SelectItem value="Produzione">Produzione</SelectItem>
-                                                <SelectItem value="Logistica">Logistica</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <Controller
+                                            name="user.department"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input {...field} value={field.value ?? ""} disabled />
+                                            )}
+                                        />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="language">Lingua</Label>
-                                        <Select
-                                            value={userSettings?.language || ""}
-                                            {...register("language", {
+                                        <Controller
+                                            name="language"
+                                            control={control}
+                                            rules={{
                                                 required: "La lingua è obbligatoria",
                                                 validate: (value) => {
-                                                    if (!["it", "en", "fr", "de", "es"].includes(value)) {
+                                                    if (!["it", "en", "fr", "de", "es"].includes(value ?? "")) {
                                                         return "Seleziona una lingua valida";
                                                     }
                                                 }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="it">Italiano</SelectItem>
-                                                <SelectItem value="en">English</SelectItem>
-                                                <SelectItem value="fr">Français</SelectItem>
-                                                <SelectItem value="de">Deutsch</SelectItem>
-                                                <SelectItem value="es">Español</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona una lingua" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="it">Italiano</SelectItem>
+                                                        <SelectItem value="en">English</SelectItem>
+                                                        <SelectItem value="fr">Français</SelectItem>
+                                                        <SelectItem value="de">Deutsch</SelectItem>
+                                                        <SelectItem value="es">Español</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
+
                                     <div className="space-y-2">
                                         <Label htmlFor="timezone">Fuso Orario</Label>
-                                        <Select
-                                            value={userSettings?.timezone || ""}
-                                            {...register("timezone", {
+                                        <Controller
+                                            name="timezone"
+                                            control={control}
+                                            rules={{
                                                 required: "Il fuso orario è obbligatorio",
                                                 validate: (value) => {
-                                                    if (!["Europe/Rome", "Europe/London", "Europe/Paris", "America/New_York", "Asia/Tokyo"].includes(value)) {
+                                                    if (!["Europe/Rome", "Europe/London", "Europe/Paris", "America/New_York", "America/Adak"].includes(value ?? "")) {
                                                         return "Seleziona un fuso orario valido";
                                                     }
                                                 }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Europe/Rome">Europa/Roma</SelectItem>
-                                                <SelectItem value="Europe/London">Europa/Londra</SelectItem>
-                                                <SelectItem value="Europe/Paris">Europa/Parigi</SelectItem>
-                                                <SelectItem value="America/New_York">America/New York</SelectItem>
-                                                <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona un fuso orario" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Europe/Rome">Europa/Roma</SelectItem>
+                                                        <SelectItem value="Europe/London">Europa/Londra</SelectItem>
+                                                        <SelectItem value="Europe/Paris">Europa/Parigi</SelectItem>
+                                                        <SelectItem value="America/New_York">America/New York</SelectItem>
+                                                        <SelectItem value="America/Adak">America/Adak</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
                                 </div>
                                 <Button type="submit" disabled={isSubmitting}>
@@ -260,6 +403,7 @@ export default function SettingsPage() {
                                 <CardDescription>Configura come e quando ricevere le notifiche</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
+
                                 <div className="space-y-4">
                                     <h4 className="text-sm font-medium">Canali di Notifica</h4>
                                     <div className="space-y-3">
@@ -268,9 +412,15 @@ export default function SettingsPage() {
                                                 <Label>Notifiche Email</Label>
                                                 <p className="text-sm text-muted-foreground">Ricevi notifiche via email</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.emailNotifications}
-                                                {...register("emailNotifications")}
+                                            <Controller
+                                                name="emailNotifications"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -278,9 +428,15 @@ export default function SettingsPage() {
                                                 <Label>Notifiche Push</Label>
                                                 <p className="text-sm text-muted-foreground">Ricevi notifiche push nel browser</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.pushNotifications}
-                                                {...register("pushNotifications")}
+                                            <Controller
+                                                name="pushNotifications"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -288,14 +444,22 @@ export default function SettingsPage() {
                                                 <Label>Notifiche SMS</Label>
                                                 <p className="text-sm text-muted-foreground">Ricevi notifiche via SMS</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.smsNotifications}
-                                                {...register("smsNotifications")}
+                                            <Controller
+                                                name="smsNotifications"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                     </div>
                                 </div>
+
                                 <Separator />
+
                                 <div className="space-y-4">
                                     <h4 className="text-sm font-medium">Tipi di Notifica</h4>
                                     <div className="space-y-3">
@@ -304,9 +468,15 @@ export default function SettingsPage() {
                                                 <Label>Aggiornamenti Ordini</Label>
                                                 <p className="text-sm text-muted-foreground">Notifiche per nuovi ordini e cambi di stato</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.orderUpdates}
-                                                {...register("orderUpdates")}
+                                            <Controller
+                                                name="orderUpdates"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -314,9 +484,15 @@ export default function SettingsPage() {
                                                 <Label>Avvisi Scorte</Label>
                                                 <p className="text-sm text-muted-foreground">Notifiche per scorte basse o esaurite</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.stockAlerts}
-                                                {...register("stockAlerts")}
+                                            <Controller
+                                                name="stockAlerts"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -324,9 +500,15 @@ export default function SettingsPage() {
                                                 <Label>Manutenzione Sistema</Label>
                                                 <p className="text-sm text-muted-foreground">Notifiche per manutenzioni programmate</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.systemMaintenance}
-                                                {...register("systemMaintenance")}
+                                            <Controller
+                                                name="systemMaintenance"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
@@ -334,15 +516,26 @@ export default function SettingsPage() {
                                                 <Label>Email Marketing</Label>
                                                 <p className="text-sm text-muted-foreground">Ricevi newsletter e promozioni</p>
                                             </div>
-                                            <Switch
-                                                checked={userSettings?.marketingEmails}
-                                                {...register("marketingEmails")}
+                                            <Controller
+                                                name="marketingEmails"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        checked={field.value ?? false}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                )}
                                             />
                                         </div>
                                     </div>
                                 </div>
+
                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                    {isSubmitting ? (
+                                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Save className="mr-2 h-4 w-4" />
+                                    )}
                                     Salva Impostazioni
                                 </Button>
                             </CardContent>
@@ -357,76 +550,116 @@ export default function SettingsPage() {
                                 <CardDescription>Configura le impostazioni di sicurezza e accesso</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
+
                                 <div className="flex items-center justify-between">
                                     <div className="space-y-0.5">
                                         <Label>Autenticazione a Due Fattori</Label>
                                         <p className="text-sm text-muted-foreground">Aggiungi un livello extra di sicurezza al tuo account</p>
                                     </div>
-                                    <Switch
-                                        checked={userSettings?.twoFactorAuth}
-                                        {...register("twoFactorAuth")}
+                                    <Controller
+                                        name="twoFactorAuth"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Switch
+                                                checked={field.value ?? false}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        )}
                                     />
                                 </div>
+
                                 <Separator />
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="session-timeout">Timeout Sessione (minuti)</Label>
-                                        <Input
-                                            id="session-timeout"
-                                            type="number"
-                                            value={userSettings?.sessionTimeout}
-                                            {...register("sessionTimeout", {
+                                        <Controller
+                                            name="sessionTimeout"
+                                            control={control}
+                                            rules={{
                                                 required: "Il timeout della sessione è obbligatorio",
                                                 min: { value: 1, message: "Il timeout deve essere almeno 1 minuto" },
                                                 max: { value: 1440, message: "Il timeout non può superare 1440 minuti (24 ore)" }
-                                            })}
+                                            }}
+                                            render={({ field }) => (
+                                                <Input
+                                                    id="session-timeout"
+                                                    type="number"
+                                                    {...field}
+                                                />
+                                            )}
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="password-expiry">Scadenza Password (giorni)</Label>
-                                        <Input
-                                            id="password-expiry"
-                                            type="number"
-                                            value={userSettings?.passwordExpiry}
-                                            {...register("passwordExpiry", {
+                                        <Controller
+                                            name="passwordExpiry"
+                                            control={control}
+                                            rules={{
                                                 required: "La scadenza della password è obbligatoria",
                                                 min: { value: 1, message: "La scadenza deve essere almeno 1 giorno" },
                                                 max: { value: 365, message: "La scadenza non può superare 365 giorni" }
-                                            })}
+                                            }}
+                                            render={({ field }) => (
+                                                <Input
+                                                    id="password-expiry"
+                                                    type="number"
+                                                    {...field}
+                                                />
+                                            )}
                                         />
                                     </div>
                                 </div>
+
                                 <div className="space-y-2">
                                     <Label htmlFor="login-attempts">Tentativi di Login Massimi</Label>
-                                    <Input
-                                        id="login-attempts"
-                                        type="number"
-                                        value={userSettings?.loginAttempts}
-                                        {...register("loginAttempts", {
+                                    <Controller
+                                        name="loginAttempts"
+                                        control={control}
+                                        rules={{
                                             required: "I tentativi di login sono obbligatori",
                                             min: { value: 1, message: "I tentativi devono essere almeno 1" },
                                             max: { value: 10, message: "I tentativi non possono superare 10" }
-                                        })}
+                                        }}
+                                        render={({ field }) => (
+                                            <Input
+                                                id="login-attempts"
+                                                type="number"
+                                                {...field}
+                                            />
+                                        )}
                                     />
                                 </div>
+
                                 <div className="space-y-2">
                                     <Label htmlFor="ip-whitelist">Lista IP Autorizzati</Label>
-                                    <Textarea
-                                        id="ip-whitelist"
-                                        placeholder="192.168.1.1, 10.0.0.1"
-                                        value={userSettings?.ipWhitelist}
-                                        {...register("ipWhitelist", {
+                                    <Controller
+                                        name="ipWhitelist"
+                                        control={control}
+                                        rules={{
                                             required: "La lista IP è obbligatoria",
                                             pattern: {
                                                 value: /^(\d{1,3}\.){3}\d{1,3}(,\s*(\d{1,3}\.){3}\d{1,3})*$/,
                                                 message: "Inserisci indirizzi IP validi separati da virgola"
                                             }
-                                        })}
+                                        }}
+                                        render={({ field }) => (
+                                            <Textarea
+                                                id="ip-whitelist"
+                                                placeholder="192.168.1.1, 10.0.0.1"
+                                                {...field}
+                                            />
+                                        )}
                                     />
                                     <p className="text-sm text-muted-foreground">Inserisci gli indirizzi IP separati da virgola</p>
                                 </div>
+
                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                    {isSubmitting ? (
+                                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Save className="mr-2 h-4 w-4" />
+                                    )}
                                     Salva Impostazioni
                                 </Button>
                             </CardContent>
@@ -441,140 +674,183 @@ export default function SettingsPage() {
                                 <CardDescription>Configura le impostazioni generali del sistema</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="currency">Valuta</Label>
-                                        <Select
-                                            value={userSettings?.currency}
-                                            {...register("currency", {
+                                        <Controller
+                                            name="currency"
+                                            control={control}
+                                            rules={{
                                                 required: "La valuta è obbligatoria",
-                                                validate: (value) => {
-                                                    if (!["EUR", "USD", "GBP", "JPY"].includes(value)) {
-                                                        return "Seleziona una valuta valida";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="EUR">Euro (€)</SelectItem>
-                                                <SelectItem value="USD">Dollaro USA ($)</SelectItem>
-                                                <SelectItem value="GBP">Sterlina (£)</SelectItem>
-                                                <SelectItem value="JPY">Yen (¥)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                                validate: (value) =>
+                                                    ["EUR", "USD", "GBP", "JPY"].includes(value ?? "") ||
+                                                    "Seleziona una valuta valida"
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona una valuta" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="EUR">Euro (€)</SelectItem>
+                                                        <SelectItem value="USD">Dollaro USA ($)</SelectItem>
+                                                        <SelectItem value="GBP">Sterlina (£)</SelectItem>
+                                                        <SelectItem value="JPY">Yen (¥)</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
+
                                     <div className="space-y-2">
                                         <Label htmlFor="date-format">Formato Data</Label>
-                                        <Select
-                                            value={userSettings?.dateFormat}
-                                            {...register("dateFormat", {
+                                        <Controller
+                                            name="dateFormat"
+                                            control={control}
+                                            rules={{
                                                 required: "Il formato data è obbligatorio",
-                                                validate: (value) => {
-                                                    if (!["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"].includes(value)) {
-                                                        return "Seleziona un formato data valido";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
-                                                <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
-                                                <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                                validate: (value) =>
+                                                    ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"].includes(value ?? "") ||
+                                                    "Seleziona un formato data valido"
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona un formato data" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                                                        <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                                                        <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
                                 </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="time-format">Formato Ora</Label>
-                                        <Select
-                                            value={userSettings?.timeFormat}
-                                            {...register("timeFormat", {
+                                        <Controller
+                                            name="timeFormat"
+                                            control={control}
+                                            rules={{
                                                 required: "Il formato ora è obbligatorio",
-                                                validate: (value) => {
-                                                    if (!["24h", "12h"].includes(value)) {
-                                                        return "Seleziona un formato ora valido";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="24h">24 ore</SelectItem>
-                                                <SelectItem value="12h">12 ore (AM/PM)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                                validate: (value) =>
+                                                    ["24h", "12h"].includes(value ?? "") ||
+                                                    "Seleziona un formato ora valido"
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona un formato ora" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="24h">24 ore</SelectItem>
+                                                        <SelectItem value="12h">12 ore (AM/PM)</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
+
                                     <div className="space-y-2">
                                         <Label htmlFor="system-language">Lingua Sistema</Label>
-                                        <Select
-                                            value={userSettings?.language}
-                                            {...register("language", {
+                                        <Controller
+                                            name="language"
+                                            control={control}
+                                            rules={{
                                                 required: "La lingua del sistema è obbligatoria",
-                                                validate: (value) => {
-                                                    if (!["it", "en", "fr", "de", "es"].includes(value)) {
-                                                        return "Seleziona una lingua valida";
-                                                    }
-                                                }
-                                            })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="it">Italiano</SelectItem>
-                                                <SelectItem value="en">English</SelectItem>
-                                                <SelectItem value="fr">Français</SelectItem>
-                                                <SelectItem value="de">Deutsch</SelectItem>
-                                                <SelectItem value="es">Español</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                                validate: (value) =>
+                                                    ["it", "en", "fr", "de", "es"].includes(value ?? "") ||
+                                                    "Seleziona una lingua valida"
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value ?? ""}
+                                                    onValueChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleziona una lingua" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="it">Italiano</SelectItem>
+                                                        <SelectItem value="en">English</SelectItem>
+                                                        <SelectItem value="fr">Français</SelectItem>
+                                                        <SelectItem value="de">Deutsch</SelectItem>
+                                                        <SelectItem value="es">Español</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
                                     </div>
                                 </div>
+
                                 <div className="space-y-2">
                                     <Label htmlFor="backup-frequency">Frequenza Backup</Label>
-                                    <Select
-                                        value={userSettings?.backupFrequency}
-                                        {...register("backupFrequency", {
+                                    <Controller
+                                        name="backupFrequency"
+                                        control={control}
+                                        rules={{
                                             required: "La frequenza di backup è obbligatoria",
-                                            validate: (value) => {
-                                                if (!["hourly", "daily", "weekly", "monthly"].includes(value)) {
-                                                    return "Seleziona una frequenza valida";
-                                                }
-                                            }
-                                        })}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="hourly">Ogni ora</SelectItem>
-                                            <SelectItem value="daily">Giornaliero</SelectItem>
-                                            <SelectItem value="weekly">Settimanale</SelectItem>
-                                            <SelectItem value="monthly">Mensile</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                            validate: (value) =>
+                                                ["hourly", "daily", "weekly", "monthly"].includes(value ?? "") ||
+                                                "Seleziona una frequenza valida"
+                                        }}
+                                        render={({ field }) => (
+                                            <Select
+                                                value={field.value ?? ""}
+                                                onValueChange={field.onChange}
+                                                name={field.name}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Seleziona una frequenza" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="hourly">Ogni ora</SelectItem>
+                                                    <SelectItem value="daily">Giornaliero</SelectItem>
+                                                    <SelectItem value="weekly">Settimanale</SelectItem>
+                                                    <SelectItem value="monthly">Mensile</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
                                 </div>
+
                                 <Separator />
+
                                 <div className="flex items-center justify-between">
                                     <div className="space-y-0.5">
                                         <Label>Modalità Manutenzione</Label>
                                         <p className="text-sm text-muted-foreground">Attiva per manutenzioni programmate</p>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <Switch
-                                            checked={userSettings?.maintenanceMode}
-                                            {...register("maintenanceMode")}
+                                        <Controller
+                                            name="maintenanceMode"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Switch
+                                                    checked={field.value ?? false}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            )}
                                         />
-                                        {userSettings?.maintenanceMode && (
+                                        {watch("maintenanceMode") && (
                                             <Badge variant="destructive" className="flex items-center gap-1">
                                                 <AlertTriangle className="h-3 w-3" />
                                                 Attiva
@@ -582,8 +858,13 @@ export default function SettingsPage() {
                                         )}
                                     </div>
                                 </div>
+
                                 <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                    {isSubmitting ? (
+                                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Save className="mr-2 h-4 w-4" />
+                                    )}
                                     Salva Impostazioni
                                 </Button>
                             </CardContent>

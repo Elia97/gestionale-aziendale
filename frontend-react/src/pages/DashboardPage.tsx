@@ -36,8 +36,6 @@ export default function Dashboard(): React.JSX.Element {
         fetchData()
     }, [dispatch])
 
-    console.log(lowStock)
-
     return (
         <div className="space-y-6">
             <div>

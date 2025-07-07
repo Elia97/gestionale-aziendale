@@ -154,3 +154,141 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
   - Modali
 
 - I componenti ricevono solo dati e callback tramite props; non contengono logica interna complessa.
+
+---
+
+## Logica della pagina Clienti
+
+### Descrizione generale
+
+> La pagina Clienti consente la gestione completa dell’anagrafica clienti: visualizzazione, ricerca, inserimento, modifica ed eliminazione.
+
+La logica principale è suddivisa in due hook personalizzati:
+
+- useCustomerForm → gestione e validazione del form cliente
+
+- useCustomersLogic → orchestrazione dell’interazione utente, stato dei modali e invocazione dei thunk
+
+### 1️⃣ Gestione del form: `useCustomerForm()`
+
+- Mantiene lo stato locale del form (nome, email, telefono, indirizzo)
+
+- Gestisce errori di validazione
+
+- Espone funzioni di utilità per validare e resettare il form
+
+- Validazione: verifica campi obbligatori, formato email e unicità dell’email rispetto ai clienti già presenti (eccetto quello in modifica)
+
+- Reset: ripristina i valori iniziali e cancella eventuali errori
+
+- Parametri:
+
+  - customers: lista completa dei clienti dal Redux store
+
+  - selectedCustomer: cliente attualmente in modifica (se presente)
+
+### 2️⃣ Logica operativa: `useCustomersLogic()`
+
+- Recupera e filtra la lista clienti
+
+- Gestisce selezione del cliente corrente
+
+- Coordina apertura/chiusura dei modali per aggiunta, modifica, eliminazione
+
+- Gestisce lo stato di caricamento (salvataggio o cancellazione in corso)
+
+- Orchestrazione delle chiamate asincrone ai thunk Redux per CRUD
+
+### Focus dettagliato sulle funzioni
+
+📥 Recupero dati
+
+- All’avvio (tramite useEffect), viene invocato fetchCustomers per caricare la lista aggiornata dei clienti.
+
+🔎 Ricerca e filtri
+
+- Stato locale: searchTerm
+
+- Filtro filteredCustomers (calcolato con useMemo): verifica se il termine è contenuto in nome, email o telefono.
+
+- Calcolo topCustomer: cliente con total_spent più alto.
+
+➕ Modale aggiunta
+
+- Funzione `handleAddCustomer`:
+
+  - Resetta il form
+
+  - Apre il modale di inserimento
+
+✏️ Modale modifica
+
+- Funzione handleEditCustomer:
+
+  - Seleziona il cliente da modificare
+
+  - Pre-carica i dati del form
+
+  - Apre il modale di modifica
+
+🗑️ Dialog eliminazione
+
+- Funzione handleDeleteCustomer:
+
+  - Seleziona il cliente da eliminare
+
+  - Apre il dialog di conferma
+
+💾 Salvataggio cliente
+
+- Funzione handleSaveCustomer:
+
+  - Valida il form
+
+  - Se cliente selezionato → aggiornamento
+
+  - Altrimenti → nuovo inserimento
+
+  - Al termine: chiude modale, resetta form e selezione
+
+  - Gestione errori per messaggi user-friendly
+
+✅ Conferma eliminazione
+
+- Funzione handleConfirmDelete:
+
+  - Elimina il cliente selezionato tramite thunk
+
+  - Al termine: chiude dialog e resetta selezione
+
+  - Gestione errori eventuali
+
+🧠 Considerazioni architetturali
+
+- Separazione delle responsabilità:
+
+  - La logica del form è isolata (validazione, gestione valori) rispetto alla logica di pagina (modali, selezione, chiamate API).
+
+- Ottimizzazione:
+
+  - useMemo riduce ricalcoli inutili del filtro.
+
+- UX:
+
+  - Gli stati di caricamento (isSaving) migliorano il feedback visivo, mentre la gestione centralizzata degli errori rende il sistema più robusto.
+
+📦 Dati e stato esposto dal hook
+
+- Nome → Descrizione
+- customers → Lista completa dei clienti dal Redux store
+- filteredCustomers → Lista filtrata in base al termine di ricerca
+- topCustomer → Cliente con maggiore total_spent
+- selectedCustomer → Cliente selezionato per modifica o eliminazione
+- searchTerm → Testo per filtrare la lista
+- isAddModalOpen → Modale aggiunta aperto/chiuso
+- isEditModalOpen → Modale modifica aperto/chiuso
+- isDeleteDialogOpen → Dialog eliminazione aperto/chiuso
+- isSaving → Flag di caricamento durante salvataggio o eliminazione
+- formData → Stato locale del form
+- formError → Messaggio di errore per validazione o operazioni fallite
+- Funzioni → Per orchestrare interazione utente e CRUD (handleAdd, handleEdit, ecc.)

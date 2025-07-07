@@ -52,6 +52,6 @@ class User extends Authenticatable
 
     public function isOperatore(): bool
     {
-        return $this->role === 'operatore';
+        return $this->role === 'operator';
     }
 }
