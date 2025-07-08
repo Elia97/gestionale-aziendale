@@ -1,4 +1,3 @@
-// hooks/useCustomerForm.ts
 import { useEffect, useMemo, useState } from "react";
 import type { Customer } from "@/store/slices/customerSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";

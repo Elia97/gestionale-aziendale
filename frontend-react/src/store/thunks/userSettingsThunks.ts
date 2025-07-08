@@ -4,14 +4,14 @@ import type { RootState } from "../index";
 interface UserSettings {
   language: string;
   timezone: string;
-  emailNotifications: boolean;
-  pushNotifications: boolean;
-  smsNotifications: boolean;
-  orderUpdates: boolean;
-  stockAlerts: boolean;
-  systemMaintenance: boolean;
-  marketingEmails: boolean;
-  twoFactorAuth: boolean;
+  emailNotifications: boolean | number;
+  pushNotifications: boolean | number;
+  smsNotifications: boolean | number;
+  orderUpdates: boolean | number;
+  stockAlerts: boolean | number;
+  systemMaintenance: boolean | number;
+  marketingEmails: boolean | number;
+  twoFactorAuth: boolean | number;
   sessionTimeout: number;
   passwordExpiry: number;
   loginAttempts: number;
@@ -20,7 +20,7 @@ interface UserSettings {
   dateFormat: string;
   timeFormat: string;
   backupFrequency: string;
-  maintenanceMode: boolean;
+  maintenanceMode: boolean | number;
 }
 
 // Carica le impostazioni dell'utente (GET)
