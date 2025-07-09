@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Order, OrderItem } from "@/store/slices/orderSlice";
+import type { Order, OrderItem } from "@/store/slices/order-slice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchOrders,
   addOrder,
   updateOrder,
   deleteOrder,
-} from "@/store/thunks/orderThunks";
+} from "@/store/thunks/order-thunks";
 
 export function useOrderForm() {
   const [formData, setFormData] = useState({

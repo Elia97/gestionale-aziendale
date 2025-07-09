@@ -1,10 +1,10 @@
-import AddCustomerModal from "./AddCustomerModal";
-import EditCustomerModal from "./EditCustomerModal";
-import CustomersTable from "./CustomersTable";
-import CustomersHeader from "./CustomersHeader";
-import CustomersStats from "./CustomersStats";
-import DeleteCustomerModal from "./DeleteCustomerModal";
-import CustomersFilters from "./CustomersFilters";
+import AddCustomerModal from "./add-customer-modal";
+import EditCustomerModal from "./edit-customer-modal";
+import CustomersTable from "./customers-table";
+import CustomersHeader from "./customers-header";
+import CustomersStats from "./customers-stats";
+import DeleteCustomerDialog from "./delete-customer-dialog";
+import CustomersFilters from "./customers-filters";
 
 export {
   AddCustomerModal,
@@ -12,6 +12,6 @@ export {
   CustomersTable,
   CustomersHeader,
   CustomersStats,
-  DeleteCustomerModal,
+  DeleteCustomerDialog,
   CustomersFilters,
 };

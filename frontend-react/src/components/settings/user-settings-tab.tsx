@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Save, RefreshCw } from "lucide-react"
 import { Controller } from "react-hook-form";
 import type { UseFormRegister, Control, FieldErrors } from "react-hook-form";
-import type { UserSettings } from "@/store/slices/userSettingsSlice"
+import type { UserSettings } from "@/store/slices/user-settings-slice"
 
 interface UserSettingsTabProps {
     errors: FieldErrors<UserSettings>;

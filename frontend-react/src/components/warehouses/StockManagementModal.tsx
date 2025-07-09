@@ -10,8 +10,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import type { Warehouse } from '@/store/slices/warehouseSlice';
-import type { Product } from '@/store/slices/productSlice';
+import type { Warehouse } from '@/store/slices/warehouse-slice';
+import type { Product } from '@/store/slices/product-slice';
 
 interface StockManagementModalProps {
     isStockModalOpen: boolean;

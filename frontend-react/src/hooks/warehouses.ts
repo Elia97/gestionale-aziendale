@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Warehouse } from "@/store/slices/warehouseSlice";
+import type { Warehouse } from "@/store/slices/warehouse-slice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchWarehouses,
@@ -7,8 +7,8 @@ import {
   updateWarehouse,
   deleteWarehouse,
   updateStocks,
-} from "@/store/thunks/warehouseThunks";
-import { fetchProducts } from "@/store/thunks/productThunks";
+} from "@/store/thunks/warehouse-thunks";
+import { fetchProducts } from "@/store/thunks/product-thunks";
 
 export function useWarehouseForm(
   warehouses: Warehouse[],

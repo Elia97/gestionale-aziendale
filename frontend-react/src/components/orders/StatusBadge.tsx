@@ -1,4 +1,4 @@
-import type { Order } from '@/store/slices/orderSlice';
+import type { Order } from '@/store/slices/order-slice';
 import type React from 'react';
 import { Badge } from "@/components/ui/badge"
 

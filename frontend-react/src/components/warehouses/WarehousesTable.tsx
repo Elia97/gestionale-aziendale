@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Edit, Trash2, Eye, MapPin, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import type { Warehouse } from "@/store/slices/warehouseSlice"
+import type { Warehouse } from "@/store/slices/warehouse-slice"
 
 interface WarehousesTableProps {
     filteredWarehouses: Warehouse[];

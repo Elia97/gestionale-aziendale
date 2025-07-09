@@ -2,7 +2,7 @@ import type React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Edit, Eye, Trash2 } from 'lucide-react';
-import type { Order } from '@/store/slices/orderSlice';
+import type { Order } from '@/store/slices/order-slice';
 import StatusBadge from './StatusBadge';
 
 

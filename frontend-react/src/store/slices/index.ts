@@ -1,9 +1,9 @@
-import authReducer from "./authSlice";
-import customerReducer from "./customerSlice";
-import productReducer from "./productSlice";
-import orderReducer from "./orderSlice";
-import warehouseReducer from "./warehouseSlice";
-import userSettingsReducer from "./userSettingsSlice";
+import authReducer from "./auth-slice";
+import customerReducer from "./customer-slice";
+import productReducer from "./product-slice";
+import orderReducer from "./order-slice";
+import warehouseReducer from "./warehouse-slice";
+import userSettingsReducer from "./user-settings-slice";
 
 export {
   authReducer,

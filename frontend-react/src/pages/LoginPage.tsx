@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { loginUser } from "@/store/thunks/authThunks";
-import { selectAuth } from "@/store/slices/authSlice";
+import { loginUser } from "@/store/thunks/auth-thunks";
+import { selectAuth } from "@/store/slices/auth-slice";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {

@@ -1,0 +1,37 @@
+import { z } from "zod";
+import type { Product } from "@/store/slices/product-slice";
+
+export const productFormSchema = z.object({
+  code: z.string().min(1, { message: "Il codice è obbligatorio" }),
+  name: z.string().min(1, { message: "Il nome è obbligatorio" }),
+  description: z.string().optional(),
+  price: z
+    .string()
+    .min(1, { message: "Il prezzo è obbligatorio" })
+    .refine((val) => !isNaN(Number(val)), {
+      message: "Prezzo non valido",
+    }),
+  category: z.string().min(1, { message: "La categoria è obbligatoria" }),
+});
+
+export type ProductFormValues = z.infer<typeof productFormSchema>;
+
+export const createProductValidator = (
+  products: Product[],
+  selectedProduct: Product | null
+) => {
+  return productFormSchema.refine(
+    (data) => {
+      const codeExists = products.some(
+        (p) =>
+          p.code.toLowerCase() === data.code.toLowerCase() &&
+          p.id !== selectedProduct?.id
+      );
+      return !codeExists;
+    },
+    {
+      message: "Esiste già un prodotto con questo codice",
+      path: ["code"],
+    }
+  );
+};

@@ -1,16 +1,16 @@
-import AddProductModal from "./AddProductModal";
-import EditProductModal from "./EditProductModal";
-import ProductsTable from "./ProductsTable";
-import DeleteProductModal from "./DeleteProductModal";
-import ProductsStats from "./ProductsStats";
-import ProductsFilters from "./ProductsFilters";
-import ProductsHeader from "./ProductsHeader";
+import AddProductModal from "./add-product-modal";
+import EditProductModal from "./edit-product-modal";
+import ProductsTable from "./products-table";
+import DeleteProductDialog from "./delete-product-dialog";
+import ProductsStats from "./products-stats";
+import ProductsFilters from "./products-filters";
+import ProductsHeader from "./products-header";
 
 export {
   AddProductModal,
   EditProductModal,
   ProductsTable,
-  DeleteProductModal,
+  DeleteProductDialog,
   ProductsStats,
   ProductsFilters,
   ProductsHeader,

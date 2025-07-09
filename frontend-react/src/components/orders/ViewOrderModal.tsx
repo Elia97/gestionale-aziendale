@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog"
 import StatusBadge from './StatusBadge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { Order } from "@/store/slices/orderSlice"
+import type { Order } from "@/store/slices/order-slice"
 
 interface ViewOrderModalProps {
     isViewModalOpen: boolean;

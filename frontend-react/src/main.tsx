@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { store } from './store'
 import './index.css'
-import AppRoutes from './routes/AppRoutes'
-import { loadSession } from './store/thunks/authThunks'
+import AppRoutes from './routes/app-routes'
+import { loadSession } from './store/thunks/auth-thunks'
 
 store.dispatch(loadSession())
 

@@ -1,38 +1,42 @@
 # FRONTEND
 
-## 🧩 Architettura Redux Toolkit
+## Architettura Redux Toolkit
 
 > Questa sezione descrive in modo sintetico come è organizzato lo **store Redux** nel frontend, seguendo un'architettura modulare e tipizzata (TypeScript) basata su Redux Toolkit.
 
 ---
 
-### 📦 Struttura delle cartelle Redux Toolkit
+### Struttura delle cartelle Redux Toolkit
 
-- **src/**
-  - **store/**
-    - **slices/** → Singoli slice (`authSlice.ts`, `customerSlice.ts`, `productSlice.ts`, `orderSlice.ts`, `warehouseSlice.ts`)
-    - **thunks/** → Funzioni asincrone per le chiamate API (`authThunks.ts`, `customerThunks.ts`, `productThunks.ts`, `orderThunks.ts`, `warehouseThunks.ts`)
-    - `index.ts` → Configurazione principale dello store
-  - **hooks/** → Hook tipizzati (`redux.ts`)
-  - _... altre cartelle (components, pages, utils, etc.)_
+- **`src/`**
+  - **`store/`**
+    - **`slices/`** → Singoli slice
+    - **`thunks/`** → Funzioni asincrone per le chiamate API
+    - **`index.ts`** → Configurazione principale dello store
+  - **`hooks/`** → Hook tipizzati
+  - _... altre cartelle_
 
 ---
 
-### 1️⃣ Creazione degli slice
+### Creazione degli slice
 
 - Ogni slice rappresenta una porzione indipendente dello stato globale.
 - Definizione:
   - Stato iniziale
-  - Reducers per azioni sincrone
+  - `reducers` per azioni sincrone
   - `extraReducers` per gestire le thunk asincrone
 
-### 2️⃣ Creazione delle thunk asincrone
+---
+
+### Creazione delle thunk asincrone
 
 - Si usano createAsyncThunk per le chiamate API.
 
 - Possibile accedere allo stato globale tramite getState (es. per recuperare il token).
 
-### 3️⃣ Configurazione dello store
+---
+
+### Configurazione dello store
 
 In `src/store/index.ts`:
 
@@ -40,13 +44,7 @@ In `src/store/index.ts`:
 
 ```ts
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    customers: customerReducer,
-    products: productReducer,
-    orders: orderReducer,
-    warehouses: warehouseReduce,
-  },
+  reducer: { ... },
 });
 ```
 
@@ -57,7 +55,9 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 ```
 
-### 4️⃣ Configurazione degli hook
+---
+
+### Configurazione degli hook
 
 In `src/hooks/redux.ts`:
 
@@ -68,56 +68,41 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
 
-## 🧭 Architettura delle pagine e delle rotte
+---
+
+---
+
+## Architettura delle pagine e delle rotte
 
 > Questa sezione descrive l’organizzazione del modulo frontend relativo a pagine, rotte e logiche dei componenti.
 > L’architettura è pensata per massimizzare la modularità, separare la logica dalla presentazione e garantire scalabilità grazie a React + TypeScript.
 
-### 📦 Struttura delle cartelle delle pagine e delle rotte
+---
 
-- **src/**
+### Struttura delle cartelle delle pagine e delle rotte
 
-  - **routes/**
+- **`src/`**
 
-    - AppRoutes.tsx → Definizione dell’albero di routing principale.
+  - **`routes/`** → Definizione dell’albero di routing principale e protezione delle rotte tramite autenticazione
 
-    - ProtectedRoutes.tsx → Componente per la protezione delle rotte tramite autenticazione.ts
+  - **`pages/`** → Entry point della logica di ogni pagina
 
-  - **pages/**
+  - **`hooks/`** → Hook per gestire la logica e il form per ogni entità
+  - _... altre cartelle_
 
-    - DashboardPage.tsx → Pagina principale.
+---
 
-    - CustomersPage.tsx → Gestione clienti.
+### Definizione delle rotte
 
-    - ProductsPage.tsx → Gestione prodotti.
+- In `AppRoutes.tsx` vengono dichiarate le rotte principali.
 
-    - OrdersPage.tsx → Gestione ordini.
+- `ProtectedRoutes.tsx` funge da wrapper per controllare l’accesso alle rotte riservate, verificando lo stato di autenticazione.
 
-    - WareHousesPage.tsx → Gestione magazzini.
+---
 
-    - SettingsPage.tsx → Configurazioni dell’applicazione.
+### Entry point delle pagine
 
-  - **hooks/**
-
-    - customers.ts → `useCustomersLogic()`
-
-    - products.ts → `useProductLogic()`
-
-    - orders.ts → `useOrdersLogic()`
-
-    - warehouses.ts → `useWarehousesLogic()`
-
-  - _... altre cartelle (`components`, `pages`, `utils`, etc.)_
-
-### 1️⃣ Definizione delle rotte
-
-- In AppRoutes.tsx vengono dichiarate le rotte principali (es. /customers, /products, ecc.).
-
-- ProtectedRoutes.tsx funge da wrapper per controllare l’accesso alle rotte riservate, verificando lo stato di autenticazione.
-
-### 2️⃣ Entry point delle pagine
-
-- Ogni file in pages/ rappresenta l’entry point per una singola pagina.
+- Ogni file in `pages/` rappresenta l’entry point per una singola pagina.
 
 - Le pagine non contengono logica diretta, ma si occupano di:
 
@@ -127,9 +112,11 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
   - Passare dati e callback ai componenti tramite props.
 
-### 3️⃣ Logica separata tramite hook
+---
 
-- Per ogni entità principale (es. clienti, prodotti) esiste un hook dedicato nella cartella hooks/ (es. useCustomersLogic).
+### Logica separata tramite hook
+
+- Per ogni entità principale esiste almeno un hook dedicato nella cartella `hooks/`.
 
 - L’hook gestisce:
 
@@ -141,9 +128,9 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
   - Eventuali filtri o trasformazioni sui dati.
 
-  - Gli hook vengono utilizzati nelle rispettive pagine per mantenere il codice dei componenti il più “dumb” possibile.
+---
 
-### 4️⃣ Composizione dei componenti
+### Composizione dei componenti
 
 - Le pagine sono composte da componenti modulari:
 
@@ -157,6 +144,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 ---
 
+---
+
 ## Logica della pagina Clienti
 
 ### Descrizione generale
@@ -165,53 +154,72 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 La logica principale è suddivisa in due hook personalizzati:
 
-- useCustomerForm → gestione e validazione del form cliente
+- `useCustomerForm()` → gestione e validazione del form cliente
 
-- useCustomersLogic → orchestrazione dell’interazione utente, stato dei modali e invocazione dei thunk
+- `useCustomersLogic()` → orchestrazione dell’interazione utente, stato delle modali e invocazione dei thunk
 
-### 1️⃣ Gestione del form: `useCustomerForm()`
+---
 
-- Mantiene lo stato locale del form (nome, email, telefono, indirizzo)
+### Gestione del form: `useCustomerForm()`
+
+- Mantiene lo stato locale del form (`name`, `email`, `phone`, `address`)
 
 - Gestisce errori di validazione
 
 - Espone funzioni di utilità per validare e resettare il form
 
-- Validazione: verifica campi obbligatori, formato email e unicità dell’email rispetto ai clienti già presenti (eccetto quello in modifica)
+- Validazione:
+
+  - verifica campi obbligatori
+  - verifica formato dell'email
+  - verifica l'unicità dell’email rispetto ai clienti già presenti (eccetto quello in modifica)
 
 - Reset: ripristina i valori iniziali e cancella eventuali errori
 
 - Parametri:
 
-  - customers: lista completa dei clienti dal Redux store
+  - `customers`: lista completa dei clienti dal Redux store
 
-  - selectedCustomer: cliente attualmente in modifica (se presente)
+  - `selectedCustomer`: cliente attualmente in modifica (se presente)
 
-### 2️⃣ Logica operativa: `useCustomersLogic()`
+---
 
-- Recupera e filtra la lista clienti
+### Logica operativa: `useCustomersLogic()`
 
-- Gestisce selezione del cliente corrente
+Hook principale che coordina tutte le operazioni della pagina clienti:
 
-- Coordina apertura/chiusura dei modali per aggiunta, modifica, eliminazione
+🔍 Funzionalità principali
 
-- Gestisce lo stato di caricamento (salvataggio o cancellazione in corso)
+- **Filtraggio intelligente**: Ricerca in tempo reale su nome, email e telefono
+- **Gestione modali**: Stato apertura/chiusura per add, edit e delete
+- **Toast notifications**: Feedback immediato per successo/errore operazioni
+- **Integrazione form**: Utilizza React Hook Form per gestione dati
 
-- Orchestrazione delle chiamate asincrone ai thunk Redux per CRUD
+🗿 Stati gestiti
+
+- `selectedCustomer`: Cliente correntemente selezionato per edit/delete
+- `searchTerm`: Termine di ricerca per filtraggio
+- `isAddModalOpen/isEditModalOpen/isDeleteDialogOpen`: Stato modali
+- `isDeleting`: Flag di caricamento durante eliminazione
+- `serverError`: Gestione errori dal server
+
+🧩 Integrazione con `useCustomerForm()`
+
+- Condivide istanza form per add e edit
+- Reset automatico form alla chiusura modali
+- Validazione integrata tramite `form.trigger()`
+
+---
 
 ### Focus dettagliato sulle funzioni
-
-📥 Recupero dati
-
-- All’avvio (tramite useEffect), viene invocato fetchCustomers per caricare la lista aggiornata dei clienti.
 
 🔎 Ricerca e filtri
 
 - Stato locale: searchTerm
 
-- Filtro filteredCustomers (calcolato con useMemo): verifica se il termine è contenuto in nome, email o telefono.
+- Filtro `filteredCustomers` (calcolato con `useMemo()`): verifica se il termine è contenuto in `name`, `email` o `address`.
 
-- Calcolo topCustomer: cliente con total_spent più alto.
+- Calcolo `topCustomer`: cliente con `total_spent` più alto.
 
 ➕ Modale aggiunta
 
@@ -223,7 +231,7 @@ La logica principale è suddivisa in due hook personalizzati:
 
 ✏️ Modale modifica
 
-- Funzione handleEditCustomer:
+- Funzione `handleEditCustomer`:
 
   - Seleziona il cliente da modificare
 
@@ -233,7 +241,7 @@ La logica principale è suddivisa in due hook personalizzati:
 
 🗑️ Dialog eliminazione
 
-- Funzione handleDeleteCustomer:
+- Funzione `handleDeleteCustomer`:
 
   - Seleziona il cliente da eliminare
 
@@ -241,7 +249,7 @@ La logica principale è suddivisa in due hook personalizzati:
 
 💾 Salvataggio cliente
 
-- Funzione handleSaveCustomer:
+- Funzione `handleSaveCustomer`:
 
   - Valida il form
 
@@ -255,40 +263,9 @@ La logica principale è suddivisa in due hook personalizzati:
 
 ✅ Conferma eliminazione
 
-- Funzione handleConfirmDelete:
+- Funzione `handleConfirmDelete`:
 
-  - Elimina il cliente selezionato tramite thunk
-
-  - Al termine: chiude dialog e resetta selezione
-
-  - Gestione errori eventuali
-
-🧠 Considerazioni architetturali
-
-- Separazione delle responsabilità:
-
-  - La logica del form è isolata (validazione, gestione valori) rispetto alla logica di pagina (modali, selezione, chiamate API).
-
-- Ottimizzazione:
-
-  - useMemo riduce ricalcoli inutili del filtro.
-
-- UX:
-
-  - Gli stati di caricamento (isSaving) migliorano il feedback visivo, mentre la gestione centralizzata degli errori rende il sistema più robusto.
-
-📦 Dati e stato esposto dal hook
-
-- Nome → Descrizione
-- customers → Lista completa dei clienti dal Redux store
-- filteredCustomers → Lista filtrata in base al termine di ricerca
-- topCustomer → Cliente con maggiore total_spent
-- selectedCustomer → Cliente selezionato per modifica o eliminazione
-- searchTerm → Testo per filtrare la lista
-- isAddModalOpen → Modale aggiunta aperto/chiuso
-- isEditModalOpen → Modale modifica aperto/chiuso
-- isDeleteDialogOpen → Dialog eliminazione aperto/chiuso
-- isSaving → Flag di caricamento durante salvataggio o eliminazione
-- formData → Stato locale del form
-- formError → Messaggio di errore per validazione o operazioni fallite
-- Funzioni → Per orchestrare interazione utente e CRUD (handleAdd, handleEdit, ecc.)
+  - Flag `isDeleting` per stato caricamento
+  - Elimina il cliente selezionato tramite thunk Redux
+  - Toast notification per feedback
+  - Auto-chiusura dialog e reset selezione

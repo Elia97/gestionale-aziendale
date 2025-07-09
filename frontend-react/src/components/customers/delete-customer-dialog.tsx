@@ -1,4 +1,4 @@
-import type React from 'react';
+import type react from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,36 +9,41 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import type { Warehouse } from '@/store/slices/warehouse-slice';
 
-interface DeleteWarehouseModalProps {
+interface DeleteCustomerDialogProps {
     isDeleteDialogOpen: boolean;
     setIsDeleteDialogOpen: (open: boolean) => void;
-    selectedWarehouse: Warehouse | null;
+    selectedCustomer: { name: string } | null;
     handleConfirmDelete: () => void;
-    isLoading: boolean;
+    isDeleting: boolean;
 }
 
-const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({ handleConfirmDelete, isDeleteDialogOpen, isLoading, selectedWarehouse, setIsDeleteDialogOpen }) => {
+const DeleteCustomerDialog: react.FC<DeleteCustomerDialogProps> = ({
+    handleConfirmDelete,
+    isDeleteDialogOpen,
+    isDeleting,
+    selectedCustomer,
+    setIsDeleteDialogOpen
+}) => {
     return (
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Conferma Eliminazione</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Sei sicuro di voler eliminare il magazzino "{selectedWarehouse?.name}"? Questa azione non può essere
-                        annullata e rimuoverà anche tutte le giacenze associate.
+                        Sei sicuro di voler eliminare il cliente "{selectedCustomer?.name}"? Questa azione non può essere
+                        annullata.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Annulla</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading}>
-                        {isLoading ? "Eliminazione..." : "Elimina"}
+                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+                        {isDeleting ? "Eliminazione..." : "Elimina"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    );
-};
+    )
+}
 
-export default DeleteWarehouseModal;
+export default DeleteCustomerDialog;

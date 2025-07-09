@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Save, RefreshCw, AlertTriangle } from "lucide-react"
 import { Controller } from "react-hook-form";
-import type { UserSettings } from '@/store/slices/userSettingsSlice';
+import type { UserSettings } from '@/store/slices/user-settings-slice';
 import type { Control, UseFormWatch } from 'react-hook-form';
 
 interface SystemSettingsTabProps {

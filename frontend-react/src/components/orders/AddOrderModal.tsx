@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import type { Order } from '@/store/slices/orderSlice';
+import type { Order } from '@/store/slices/order-slice';
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAppSelector } from '@/hooks/redux';

@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Save, RefreshCw } from "lucide-react"
 import { Controller } from "react-hook-form";
-import type { UserSettings } from '@/store/slices/userSettingsSlice';
+import type { UserSettings } from '@/store/slices/user-settings-slice';
 import type { Control } from 'react-hook-form';
 
 interface NotificationSettingsTabProps {

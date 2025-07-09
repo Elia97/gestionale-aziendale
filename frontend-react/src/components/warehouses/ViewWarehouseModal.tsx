@@ -12,7 +12,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import type { Warehouse } from '@/store/slices/warehouseSlice';
+import type { Warehouse } from '@/store/slices/warehouse-slice';
 
 interface ViewWarehouseModalProps {
     isViewModalOpen: boolean;

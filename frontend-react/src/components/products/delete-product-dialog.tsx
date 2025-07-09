@@ -1,39 +1,37 @@
 import type React from 'react';
 import {
     AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import type { Warehouse } from '@/store/slices/warehouse-slice';
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction
+} from "@/components/ui/alert-dialog";
 
-interface DeleteWarehouseModalProps {
+interface DeleteProductModalProps {
     isDeleteDialogOpen: boolean;
     setIsDeleteDialogOpen: (open: boolean) => void;
-    selectedWarehouse: Warehouse | null;
+    selectedProduct: { name: string } | null;
     handleConfirmDelete: () => void;
-    isLoading: boolean;
+    isDeleting: boolean;
 }
 
-const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({ handleConfirmDelete, isDeleteDialogOpen, isLoading, selectedWarehouse, setIsDeleteDialogOpen }) => {
+const DeleteProductModal: React.FC<DeleteProductModalProps> = ({ handleConfirmDelete, isDeleteDialogOpen, isDeleting, selectedProduct, setIsDeleteDialogOpen }) => {
     return (
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Conferma Eliminazione</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Sei sicuro di voler eliminare il magazzino "{selectedWarehouse?.name}"? Questa azione non può essere
-                        annullata e rimuoverà anche tutte le giacenze associate.
+                        Sei sicuro di voler eliminare il prodotto "{selectedProduct?.name}"?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Annulla</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading}>
-                        {isLoading ? "Eliminazione..." : "Elimina"}
+                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+                        {isDeleting ? "Eliminazione..." : "Elimina"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
@@ -41,4 +39,4 @@ const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({ handleConfi
     );
 };
 
-export default DeleteWarehouseModal;
+export default DeleteProductModal;

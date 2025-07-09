@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useAppSelector } from '@/hooks/redux';
-import type { Order } from '@/store/slices/orderSlice';
+import type { Order } from '@/store/slices/order-slice';
 import OrderItems from './OrderItems';
 import { statusOptions } from "./StatusBadge"
 
