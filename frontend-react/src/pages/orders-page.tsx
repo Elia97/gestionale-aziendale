@@ -1,4 +1,4 @@
-import { useOrdersLogic } from "@/hooks/orders"
+import { useOrdersLogic } from "@/hooks/orders/use-orders-logic"
 import {
     OrdersHeader,
     OrdersStats,
@@ -39,30 +39,30 @@ export default function OrdersPage(): React.JSX.Element {
             <AddOrderModal
                 isAddModalOpen={ordersLogic.isAddModalOpen}
                 setIsAddModalOpen={ordersLogic.setIsAddModalOpen}
-                formData={ordersLogic.formData}
-                setFormData={ordersLogic.setFormData}
-                handleAddOrderItem={ordersLogic.handleAddOrderItem}
-                orderItems={ordersLogic.orderItems}
-                handleUpdateOrderItem={ordersLogic.handleUpdateOrderItem}
-                handleRemoveOrderItem={ordersLogic.handleRemoveOrderItem}
-                calculateOrderTotal={ordersLogic.calculateOrderTotal}
-                error={ordersLogic.error}
-                handleSaveOrder={ordersLogic.handleSaveOrder}
-                isLoading={ordersLogic.isLoading}
+                form={ordersLogic.form}
+                fields={ordersLogic.fields}
+                products={ordersLogic.products}
+                customers={ordersLogic.customers}
+                addProduct={ordersLogic.addProduct}
+                removeProduct={ordersLogic.removeProduct}
+                handleProductChange={ordersLogic.handleProductChange}
+                calculateTotal={ordersLogic.calculateTotal}
+                serverError={ordersLogic.serverError}
+                onSubmit={ordersLogic.onSubmit}
             />
             <EditOrderModal
                 isEditModalOpen={ordersLogic.isEditModalOpen}
                 setIsEditModalOpen={ordersLogic.setIsEditModalOpen}
-                formData={ordersLogic.formData}
-                setFormData={ordersLogic.setFormData}
-                handleAddOrderItem={ordersLogic.handleAddOrderItem}
-                orderItems={ordersLogic.orderItems}
-                handleUpdateOrderItem={ordersLogic.handleUpdateOrderItem}
-                handleRemoveOrderItem={ordersLogic.handleRemoveOrderItem}
-                calculateOrderTotal={ordersLogic.calculateOrderTotal}
-                error={ordersLogic.error}
-                handleSaveOrder={ordersLogic.handleSaveOrder}
-                isLoading={ordersLogic.isLoading}
+                form={ordersLogic.form}
+                fields={ordersLogic.fields}
+                products={ordersLogic.products}
+                customers={ordersLogic.customers}
+                addProduct={ordersLogic.addProduct}
+                removeProduct={ordersLogic.removeProduct}
+                handleProductChange={ordersLogic.handleProductChange}
+                calculateTotal={ordersLogic.calculateTotal}
+                serverError={ordersLogic.serverError}
+                onSubmit={ordersLogic.onSubmit}
                 selectedOrder={ordersLogic.selectedOrder}
             />
             <ViewOrderModal
@@ -75,7 +75,7 @@ export default function OrdersPage(): React.JSX.Element {
                 setIsDeleteDialogOpen={ordersLogic.setIsDeleteDialogOpen}
                 selectedOrder={ordersLogic.selectedOrder}
                 handleConfirmDelete={ordersLogic.handleConfirmDelete}
-                isLoading={ordersLogic.isLoading}
+                isDeleting={ordersLogic.isDeleting}
             />
         </div>
     )

@@ -20,12 +20,22 @@ interface StockManagementModalProps {
     products: Product[];
     stockData: Record<string, number>;
     setStockData: React.Dispatch<React.SetStateAction<Record<string, number>>>;
-    error?: string;
+    serverError?: string;
     handleSaveStock: () => void;
-    isLoading: boolean;
+    isUpdatingStock: boolean;
 }
 
-const StockManagementModal: React.FC<StockManagementModalProps> = ({ handleSaveStock, isLoading, isStockModalOpen, products, selectedWarehouse, setIsStockModalOpen, setStockData, stockData, error }) => {
+const StockManagementModal: React.FC<StockManagementModalProps> = ({
+    handleSaveStock,
+    isUpdatingStock,
+    isStockModalOpen,
+    products,
+    selectedWarehouse,
+    setIsStockModalOpen,
+    setStockData,
+    stockData,
+    serverError
+}) => {
     return (
         <Dialog open={isStockModalOpen} onOpenChange={setIsStockModalOpen}>
             <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
@@ -60,9 +70,9 @@ const StockManagementModal: React.FC<StockManagementModalProps> = ({ handleSaveS
                             </div>
                         </div>
                     ))}
-                    {error && (
+                    {serverError && (
                         <Alert variant="destructive">
-                            <AlertDescription>{error}</AlertDescription>
+                            <AlertDescription>{serverError}</AlertDescription>
                         </Alert>
                     )}
                 </div>
@@ -70,8 +80,8 @@ const StockManagementModal: React.FC<StockManagementModalProps> = ({ handleSaveS
                     <Button variant="outline" onClick={() => setIsStockModalOpen(false)}>
                         Annulla
                     </Button>
-                    <Button onClick={handleSaveStock} disabled={isLoading}>
-                        {isLoading ? "Salvataggio..." : "Salva Giacenze"}
+                    <Button onClick={handleSaveStock} disabled={isUpdatingStock}>
+                        {isUpdatingStock ? "Salvataggio..." : "Salva Giacenze"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

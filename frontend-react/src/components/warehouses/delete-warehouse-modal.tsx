@@ -16,10 +16,16 @@ interface DeleteWarehouseModalProps {
     setIsDeleteDialogOpen: (open: boolean) => void;
     selectedWarehouse: Warehouse | null;
     handleConfirmDelete: () => void;
-    isLoading: boolean;
+    isDeleting: boolean;
 }
 
-const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({ handleConfirmDelete, isDeleteDialogOpen, isLoading, selectedWarehouse, setIsDeleteDialogOpen }) => {
+const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({
+    handleConfirmDelete,
+    isDeleteDialogOpen,
+    isDeleting,
+    selectedWarehouse,
+    setIsDeleteDialogOpen
+}) => {
     return (
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialogContent>
@@ -32,8 +38,8 @@ const DeleteWarehouseModal: React.FC<DeleteWarehouseModalProps> = ({ handleConfi
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Annulla</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading}>
-                        {isLoading ? "Eliminazione..." : "Elimina"}
+                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+                        {isDeleting ? "Eliminazione..." : "Elimina"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

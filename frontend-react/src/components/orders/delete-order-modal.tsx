@@ -13,12 +13,12 @@ import {
 interface DeleteOrderModalProps {
     isDeleteDialogOpen: boolean;
     setIsDeleteDialogOpen: (open: boolean) => void;
-    selectedOrder: { id: number } | null; // Adjust type as needed
+    selectedOrder: { id: number } | null;
     handleConfirmDelete: () => void;
-    isLoading: boolean;
+    isDeleting: boolean;
 }
 
-const DeleteOrderModal: React.FC<DeleteOrderModalProps> = ({ isDeleteDialogOpen, setIsDeleteDialogOpen, selectedOrder, handleConfirmDelete, isLoading }) => {
+const DeleteOrderModal: React.FC<DeleteOrderModalProps> = ({ isDeleteDialogOpen, setIsDeleteDialogOpen, selectedOrder, handleConfirmDelete, isDeleting }) => {
     return (
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <AlertDialogContent>
@@ -31,8 +31,8 @@ const DeleteOrderModal: React.FC<DeleteOrderModalProps> = ({ isDeleteDialogOpen,
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Annulla</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading}>
-                        {isLoading ? "Eliminazione..." : "Elimina"}
+                    <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+                        {isDeleting ? "Eliminazione..." : "Elimina"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

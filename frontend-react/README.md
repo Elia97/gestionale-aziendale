@@ -269,3 +269,55 @@ Hook principale che coordina tutte le operazioni della pagina clienti:
   - Elimina il cliente selezionato tramite thunk Redux
   - Toast notification per feedback
   - Auto-chiusura dialog e reset selezione
+
+---
+
+## 🎯 Migrazione completata per OrdersPage
+
+### ✅ **Aggiornamenti implementati:**
+
+1. **Schema di validazione Zod**:
+
+   - Gestione prezzo come stringa per consistenza
+   - Validazione prodotti duplicati nell'ordine
+   - Messaggi di errore localizzati
+
+2. **Hook React Hook Form**:
+
+   - `useOrderForm` per gestione form con `useFieldArray`
+   - `useOrdersLogic` unificato con nuove props
+   - Toast notifications integrate
+
+3. **Componenti aggiornati**:
+   - ✅ `DeleteOrderModal` → props `isDeleting` invece di `isLoading`
+   - 🔄 `AddOrderModal` → in migrazione verso React Hook Form
+   - 🔄 `EditOrderModal` → da aggiornare
+
+### 🔧 **Props aggiornate per i modali:**
+
+```tsx
+// ✅ DeleteOrderModal (completato)
+interface DeleteOrderModalProps {
+  isDeleteDialogOpen: boolean;
+  setIsDeleteDialogOpen: (open: boolean) => void;
+  selectedOrder: { id: number } | null;
+  handleConfirmDelete: () => void;
+  isDeleting: boolean; // ← Cambiato da isLoading
+}
+
+// 🔄 AddOrderModal (nuovo schema)
+interface AddOrderModalProps {
+  isAddModalOpen: boolean;
+  setIsAddModalOpen: (open: boolean) => void;
+  form: UseFormReturn<OrderFormValues>;
+  fields: FieldArrayWithId<OrderFormValues, "products", "id">[];
+  products: Product[];
+  customers: Customer[];
+  addProduct: () => void;
+  removeProduct: (index: number) => void;
+  handleProductChange: (index: number, productId: number) => void;
+  calculateTotal: () => number;
+  serverError?: string;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+```

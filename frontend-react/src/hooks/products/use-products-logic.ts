@@ -25,30 +25,39 @@ export function useProductsLogic() {
   const form = useProductForm(products, selectedProduct);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (products.length === 0) {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, products.length]);
 
   const stats = useMemo(() => {
     const totalProducts = products.length;
+
     const totalValue = products.reduce((sum, product) => {
-      const totalStock = product.stocks.reduce(
-        (stockSum, stock) => stockSum + stock.quantity,
-        0
+      const totalStock = Number(
+        product.stocks?.reduce(
+          (stockSum, stock) => stockSum + stock.quantity,
+          0
+        ) ?? 0
       );
-      return sum + product.price * totalStock;
+
+      const price = Number(product.price) || 0;
+
+      return sum + price * totalStock;
     }, 0);
+
     const lowStockProducts = products.filter((product) => {
-      const totalStock = product.stocks.reduce(
-        (sum, stock) => sum + stock.quantity,
-        0
+      const totalStock = Number(
+        product.stocks?.reduce((sum, stock) => sum + stock.quantity, 0) ?? 0
       );
       return totalStock <= 10;
     }).length;
+
     const totalStock = products.reduce((sum, product) => {
-      return (
-        sum +
-        product.stocks.reduce((stockSum, stock) => stockSum + stock.quantity, 0)
+      const productStock = Number(
+        product.stocks?.reduce((sum, stock) => sum + stock.quantity, 0) ?? 0
       );
+      return sum + productStock;
     }, 0);
 
     return { totalProducts, totalValue, lowStockProducts, totalStock };

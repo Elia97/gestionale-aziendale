@@ -1,13 +1,13 @@
-import AddOrderModal from "./AddOrderModal";
-import EditOrderModal from "./EditOrderModal";
-import ViewOrderModal from "./ViewOrderModal";
-import DeleteOrderModal from "./DeleteOrderModal";
-import OrdersHeader from "./OrdersHeader";
-import OrdersFilters from "./OrdersFilters";
-import OrdersTable from "./OrdersTable";
-import OrdersStats from "./OrdersStats";
-import OrderItems from "./OrderItems";
-import StatusBadge from "./StatusBadge";
+import AddOrderModal from "./add-order-modal";
+import EditOrderModal from "./edit-order-modal";
+import ViewOrderModal from "./view-order-modal";
+import DeleteOrderModal from "./delete-order-modal";
+import OrdersHeader from "./orders-header";
+import OrdersFilters from "./orders-filters";
+import OrdersTable from "./orders-table";
+import OrdersStats from "./orders-stats";
+import OrderItems from "./order-items";
+import StatusBadge from "./status-badge";
 
 export {
   AddOrderModal,

@@ -9,71 +9,15 @@ import {
   updateStocks,
 } from "@/store/thunks/warehouse-thunks";
 import { fetchProducts } from "@/store/thunks/product-thunks";
-
-export function useWarehouseForm(
-  warehouses: Warehouse[],
-  selectedWarehouse: Warehouse | null
-) {
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-  });
-
-  const [error, setError] = useState("");
-
-  const [stockData, setStockData] = useState<{ [productId: number]: number }>(
-    {}
-  );
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      address: "",
-    });
-    setStockData({});
-    setError("");
-  };
-
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      setError("Il nome del magazzino è obbligatorio");
-      return false;
-    }
-    if (!formData.address.trim()) {
-      setError("L'indirizzo è obbligatorio");
-      return false;
-    }
-
-    // Controlla nome duplicato (escludi magazzino corrente in modifica)
-    const nameExists = warehouses.some(
-      (warehouse) =>
-        warehouse.name.toLowerCase() === formData.name.toLowerCase() &&
-        warehouse.id !== selectedWarehouse?.id
-    );
-    if (nameExists) {
-      setError("Esiste già un magazzino con questo nome");
-      return false;
-    }
-
-    return true;
-  };
-
-  return {
-    formData,
-    setFormData,
-    error,
-    setError,
-    resetForm,
-    validateForm,
-    stockData,
-    setStockData,
-  };
-}
+import { useWarehouseForm } from "./use-warehouse-form";
+import type { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export function useWarehousesLogic() {
   const dispatch = useAppDispatch();
   const warehouses = useAppSelector((state) => state.warehouses.list);
   const products = useAppSelector((state) => state.products.list);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -83,47 +27,47 @@ export function useWarehousesLogic() {
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdatingStock, setIsUpdatingStock] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const [stockData, setStockData] = useState<{ [productId: number]: number }>(
+    {}
+  );
 
-  const {
-    formData,
-    setFormData,
-    error,
-    setError,
-    resetForm,
-    validateForm,
-    stockData,
-    setStockData,
-  } = useWarehouseForm(warehouses, selectedWarehouse);
+  const form = useWarehouseForm(warehouses, selectedWarehouse);
 
   useEffect(() => {
-    dispatch(fetchWarehouses());
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (warehouses.length === 0) {
+      dispatch(fetchWarehouses());
+    }
+    if (products.length === 0) {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, warehouses.length, products.length]);
 
   const stats = useMemo(() => {
     const totalWarehouses = warehouses.length;
     const totalProducts = warehouses.reduce(
-      (sum, warehouse) => sum + warehouse.stocks?.length || 0,
+      (sum, warehouse) => sum + (warehouse.stocks?.length || 0),
       0
     );
     const totalValue = warehouses.reduce((sum, warehouse) => {
       return (
         sum +
-        warehouse.stocks?.reduce(
+        (warehouse.stocks?.reduce(
           (stockSum, stock) =>
             stockSum + stock.quantity * Number(stock.product.price),
           0
-        )
+        ) || 0)
       );
     }, 0);
     const totalStock = warehouses.reduce((sum, warehouse) => {
       return (
         sum +
-        warehouse.stocks?.reduce(
+        (warehouse.stocks?.reduce(
           (stockSum, stock) => stockSum + stock.quantity,
           0
-        )
+        ) || 0)
       );
     }, 0);
 
@@ -139,17 +83,17 @@ export function useWarehousesLogic() {
   }, [warehouses, searchTerm]);
 
   const handleAddWarehouse = () => {
-    resetForm();
+    form.reset({
+      name: "",
+      address: "",
+    });
+    setServerError("");
     setIsAddModalOpen(true);
   };
 
   const handleEditWarehouse = (warehouse: Warehouse) => {
     setSelectedWarehouse(warehouse);
-    setFormData({
-      name: warehouse.name,
-      address: warehouse.address,
-    });
-    setError("");
+    setServerError("");
     setIsEditModalOpen(true);
   };
 
@@ -173,11 +117,15 @@ export function useWarehousesLogic() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleSaveWarehouse = async () => {
-    if (!validateForm()) return;
+  const handleSaveWarehouse = async (data?: FieldValues) => {
+    // Se i dati non sono forniti, trigger la validazione
+    if (!data) {
+      const isValid = await form.trigger();
+      if (!isValid) return;
+      data = form.getValues();
+    }
 
-    setIsLoading(true);
-    setError("");
+    setServerError("");
 
     try {
       if (isEditModalOpen && selectedWarehouse) {
@@ -185,35 +133,45 @@ export function useWarehousesLogic() {
           updateWarehouse({
             warehouseId: selectedWarehouse.id,
             warehouseData: {
-              name: formData.name,
-              address: formData.address,
+              name: data.name,
+              address: data.address,
             },
           })
-        );
+        ).unwrap();
+        toast.success("Magazzino aggiornato con successo!");
         setIsEditModalOpen(false);
       } else {
         await dispatch(
           addWarehouse({
-            name: formData.name,
-            address: formData.address,
+            name: data.name,
+            address: data.address,
           })
-        );
+        ).unwrap();
+        toast.success("Magazzino creato con successo!");
         setIsAddModalOpen(false);
       }
 
-      resetForm();
+      form.reset();
       setSelectedWarehouse(null);
-    } catch {
-      setError("Errore durante il salvataggio. Riprova.");
-    } finally {
-      setIsLoading(false);
+    } catch (error: unknown) {
+      if (typeof error === "string") {
+        toast.error(error);
+        setServerError(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+        setServerError(error.message);
+      } else {
+        toast.error("Errore durante il salvataggio.");
+        setServerError("Errore durante il salvataggio.");
+      }
     }
   };
 
   const handleSaveStock = async () => {
     if (!selectedWarehouse) return;
 
-    setIsLoading(true);
+    setIsUpdatingStock(true);
+    setServerError("");
 
     try {
       const stocksToUpdate = Object.entries(stockData).map(
@@ -222,60 +180,85 @@ export function useWarehousesLogic() {
           quantity: Number(quantity),
         })
       );
+
       await dispatch(
         updateStocks({
           warehouseId: selectedWarehouse.id,
           stocks: stocksToUpdate,
         })
-      );
+      ).unwrap();
 
+      toast.success("Giacenze aggiornate con successo!");
       setIsStockModalOpen(false);
       setSelectedWarehouse(null);
       setStockData({});
-    } catch {
-      setError("Errore durante il salvataggio delle giacenze. Riprova.");
+    } catch (error: unknown) {
+      if (typeof error === "string") {
+        toast.error(error);
+        setServerError(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+        setServerError(error.message);
+      } else {
+        toast.error("Errore durante l'aggiornamento delle giacenze.");
+        setServerError("Errore durante l'aggiornamento delle giacenze.");
+      }
     } finally {
-      setIsLoading(false);
+      setIsUpdatingStock(false);
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedWarehouse) return;
 
-    setIsLoading(true);
-
+    setIsDeleting(true);
     try {
       await dispatch(deleteWarehouse(selectedWarehouse.id)).unwrap();
       setIsDeleteDialogOpen(false);
       setSelectedWarehouse(null);
-    } catch {
-      setError("Errore durante l'eliminazione. Riprova.");
+      toast.success("Magazzino eliminato con successo!");
+    } catch (error: unknown) {
+      if (typeof error === "string") {
+        toast.error(error);
+        setServerError(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+        setServerError(error.message);
+      } else {
+        toast.error("Errore durante l'eliminazione.");
+        setServerError("Errore durante l'eliminazione.");
+      }
     } finally {
-      setIsLoading(false);
+      setIsDeleting(false);
     }
   };
 
   const getWarehouseStats = (warehouse: Warehouse) => {
     const totalProducts = warehouse.stocks?.length || 0;
-    const totalQuantity = warehouse.stocks?.reduce(
-      (sum, stock) => sum + stock.quantity,
-      0
-    );
-    const totalValue = warehouse.stocks?.reduce(
-      (sum, stock) => sum + stock.quantity * stock.product.price,
-      0
-    );
-    const lowStockItems = warehouse.stocks?.filter(
-      (stock) => stock.quantity <= 10
-    ).length;
+    const totalQuantity =
+      warehouse.stocks?.reduce((sum, stock) => sum + stock.quantity, 0) || 0;
+    const totalValue =
+      warehouse.stocks?.reduce(
+        (sum, stock) => sum + stock.quantity * stock.product.price,
+        0
+      ) || 0;
+    const lowStockItems =
+      warehouse.stocks?.filter((stock) => stock.quantity <= 10).length || 0;
 
     return { totalProducts, totalQuantity, totalValue, lowStockItems };
   };
 
+  const onSubmit = form.handleSubmit(handleSaveWarehouse);
+
   return {
+    // Dati
     warehouses,
     products,
     filteredWarehouses,
+    stats,
+    selectedWarehouse,
+
+    // Stato UI
     searchTerm,
     setSearchTerm,
     isAddModalOpen,
@@ -288,18 +271,18 @@ export function useWarehousesLogic() {
     setIsDeleteDialogOpen,
     isStockModalOpen,
     setIsStockModalOpen,
-    selectedWarehouse,
-    setSelectedWarehouse,
-    formData,
-    setFormData,
-    error,
-    isLoading,
-    setError,
-    resetForm,
-    validateForm,
+    isDeleting,
+    isUpdatingStock,
+    serverError,
+
+    // Form
+    form,
+
+    // Stock management
     stockData,
     setStockData,
-    stats,
+
+    // Handlers
     handleAddWarehouse,
     handleEditWarehouse,
     handleViewWarehouse,
@@ -309,5 +292,6 @@ export function useWarehousesLogic() {
     handleSaveStock,
     handleConfirmDelete,
     getWarehouseStats,
+    onSubmit,
   };
 }

@@ -9,7 +9,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import StatusBadge from './StatusBadge';
+import StatusBadge from './status-badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { Order } from "@/store/slices/order-slice"
 

@@ -8,8 +8,8 @@ export const productFormSchema = z.object({
   price: z
     .string()
     .min(1, { message: "Il prezzo è obbligatorio" })
-    .refine((val) => !isNaN(Number(val)), {
-      message: "Prezzo non valido",
+    .refine((v) => Number(v) > 0, {
+      message: "Il prezzo deve essere maggiore di zero.",
     }),
   category: z.string().min(1, { message: "La categoria è obbligatoria" }),
 });

@@ -8,7 +8,7 @@ import type { Order } from "@/store/slices/order-slice"
 import { useState } from "react"
 import type { Stock } from "@/store/slices/product-slice"
 
-export default function Dashboard(): React.JSX.Element {
+export default function DashboardPage(): React.JSX.Element {
     const [totalCustomers, setTotalCustomers] = useState(0)
     const [totalProducts, setTotalProducts] = useState(0)
     const [pendingOrders, setPendingOrders] = useState(0)

@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import type { Order } from '@/store/slices/order-slice';
-import StatusBadge from './StatusBadge';
+import StatusBadge from './status-badge';
 
 
 interface OrdersTableProps {

@@ -75,13 +75,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                                 id="price"
                                 type="number"
                                 step="0.01"
-                                min="0"
-                                {...register("price", {
-                                    required: "Il prezzo è obbligatorio.",
-                                    valueAsNumber: true,
-                                    validate: (value) => Number(value) > 0 || "Il prezzo deve essere maggiore di zero."
-                                })}
+                                min="0.01"
                                 placeholder="0.00"
+                                {...register("price", {
+                                    valueAsNumber: false,
+                                })}
                             />
                             {errors.price && (
                                 <p className="text-sm text-red-500">{errors.price.message}</p>

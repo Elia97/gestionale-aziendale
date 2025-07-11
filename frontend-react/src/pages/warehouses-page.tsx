@@ -1,4 +1,4 @@
-import { useWarehousesLogic } from "@/hooks/warehouses"
+import { useWarehousesLogic } from "@/hooks/warehouses/use-warehouses-logic"
 import {
     WareHousesHeader,
     WarehousesStats,
@@ -39,20 +39,16 @@ export default function WarehousesPage(): React.JSX.Element {
             <AddWareHouseModal
                 isAddModalOpen={warehousesLogic.isAddModalOpen}
                 setIsAddModalOpen={warehousesLogic.setIsAddModalOpen}
-                formData={warehousesLogic.formData}
-                setFormData={warehousesLogic.setFormData}
-                error={warehousesLogic.error}
-                handleSaveWarehouse={warehousesLogic.handleSaveWarehouse}
-                isLoading={warehousesLogic.isLoading}
+                form={warehousesLogic.form}
+                serverError={warehousesLogic.serverError}
+                onSubmit={warehousesLogic.onSubmit}
             />
             <EditWarehouseModal
                 isEditModalOpen={warehousesLogic.isEditModalOpen}
                 setIsEditModalOpen={warehousesLogic.setIsEditModalOpen}
-                formData={warehousesLogic.formData}
-                setFormData={warehousesLogic.setFormData}
-                error={warehousesLogic.error}
-                handleSaveWarehouse={warehousesLogic.handleSaveWarehouse}
-                isLoading={warehousesLogic.isLoading}
+                form={warehousesLogic.form}
+                serverError={warehousesLogic.serverError}
+                onSubmit={warehousesLogic.onSubmit}
             />
             <ViewWarehouseModal
                 isViewModalOpen={warehousesLogic.isViewModalOpen}
@@ -67,16 +63,16 @@ export default function WarehousesPage(): React.JSX.Element {
                 products={warehousesLogic.products}
                 stockData={warehousesLogic.stockData}
                 setStockData={warehousesLogic.setStockData}
-                error={warehousesLogic.error}
+                serverError={warehousesLogic.serverError}
                 handleSaveStock={warehousesLogic.handleSaveStock}
-                isLoading={warehousesLogic.isLoading}
+                isUpdatingStock={warehousesLogic.isUpdatingStock}
             />
             <DeleteWarehouseModal
                 isDeleteDialogOpen={warehousesLogic.isDeleteDialogOpen}
                 setIsDeleteDialogOpen={warehousesLogic.setIsDeleteDialogOpen}
                 selectedWarehouse={warehousesLogic.selectedWarehouse}
                 handleConfirmDelete={warehousesLogic.handleConfirmDelete}
-                isLoading={warehousesLogic.isLoading}
+                isDeleting={warehousesLogic.isDeleting}
             />
         </div>
     )

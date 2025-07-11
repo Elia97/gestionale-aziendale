@@ -27,8 +27,10 @@ export function useCustomersLogic() {
   const form = useCustomerForm(customers, selectedCustomer);
 
   useEffect(() => {
-    dispatch(fetchCustomers());
-  }, [dispatch]);
+    if (customers.length === 0) {
+      dispatch(fetchCustomers());
+    }
+  }, [dispatch, customers.length]);
 
   const filteredCustomers = useMemo(
     () =>
