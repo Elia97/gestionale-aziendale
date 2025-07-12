@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Hash, Package, Euro, AlertTriangle } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductsStatsProps {
     stats: {
@@ -31,7 +32,7 @@ const ProductsStats: React.FC<ProductsStatsProps> = ({ stats }) => {
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-bold">
-                        €{stats.totalValue.toLocaleString("it-IT", { minimumFractionDigits: 2 })}
+                        {formatCurrency(Number(stats.totalValue))}
                     </div>
                 </CardContent>
             </Card>

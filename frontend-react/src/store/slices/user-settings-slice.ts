@@ -4,10 +4,9 @@ import {
   fetchUserSettings,
   updateUserSettings,
 } from "../thunks/userSettings-thunks";
-import type { User } from "./auth-slice";
 
 export interface UserSettings {
-  user: User;
+  // Rimuoviamo user da qui, sarà gestito dal slice auth
   language: string;
   timezone: string;
   emailNotifications: boolean;
@@ -58,7 +57,31 @@ const userSettingsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchUserSettings.fulfilled, (state, action) => {
-        state.settings = action.payload as UserSettings;
+        // Converte i dati dal backend (numeri) in boolean per lo stato
+        const settingsData = action.payload;
+
+        // Crea un oggetto UserSettings (solo impostazioni, user gestito da auth slice)
+        state.settings = {
+          language: settingsData.language,
+          timezone: settingsData.timezone,
+          emailNotifications: settingsData.emailNotifications === 1,
+          pushNotifications: settingsData.pushNotifications === 1,
+          smsNotifications: settingsData.smsNotifications === 1,
+          orderUpdates: settingsData.orderUpdates === 1,
+          stockAlerts: settingsData.stockAlerts === 1,
+          systemMaintenance: settingsData.systemMaintenance === 1,
+          marketingEmails: settingsData.marketingEmails === 1,
+          twoFactorAuth: settingsData.twoFactorAuth === 1,
+          sessionTimeout: settingsData.sessionTimeout,
+          passwordExpiry: settingsData.passwordExpiry,
+          loginAttempts: settingsData.loginAttempts,
+          ipWhitelist: settingsData.ipWhitelist || "",
+          currency: settingsData.currency,
+          dateFormat: settingsData.dateFormat,
+          timeFormat: settingsData.timeFormat,
+          backupFrequency: settingsData.backupFrequency,
+          maintenanceMode: settingsData.maintenanceMode === 1,
+        };
         state.loading = false;
       })
       .addCase(fetchUserSettings.rejected, (state, action) => {
@@ -70,7 +93,30 @@ const userSettingsSlice = createSlice({
         state.error = null;
       })
       .addCase(updateUserSettings.fulfilled, (state, action) => {
-        state.settings = action.payload as UserSettings;
+        // Converte i dati dal backend (numeri) in boolean per lo stato
+        const settingsData = action.payload;
+
+        state.settings = {
+          language: settingsData.language,
+          timezone: settingsData.timezone,
+          emailNotifications: settingsData.emailNotifications === 1,
+          pushNotifications: settingsData.pushNotifications === 1,
+          smsNotifications: settingsData.smsNotifications === 1,
+          orderUpdates: settingsData.orderUpdates === 1,
+          stockAlerts: settingsData.stockAlerts === 1,
+          systemMaintenance: settingsData.systemMaintenance === 1,
+          marketingEmails: settingsData.marketingEmails === 1,
+          twoFactorAuth: settingsData.twoFactorAuth === 1,
+          sessionTimeout: settingsData.sessionTimeout,
+          passwordExpiry: settingsData.passwordExpiry,
+          loginAttempts: settingsData.loginAttempts,
+          ipWhitelist: settingsData.ipWhitelist || "",
+          currency: settingsData.currency,
+          dateFormat: settingsData.dateFormat,
+          timeFormat: settingsData.timeFormat,
+          backupFrequency: settingsData.backupFrequency,
+          maintenanceMode: settingsData.maintenanceMode === 1,
+        };
         state.loading = false;
       })
       .addCase(updateUserSettings.rejected, (state, action) => {

@@ -1,6 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { User, Bell, Shield, Database } from "lucide-react"
-import { useSettingsLogic } from "@/hooks/settings"
+import { Button } from "@/components/ui/button"
+import { User, Bell, Shield, Database, Save, RefreshCw } from "lucide-react"
+import { useSettingsLogic } from "@/hooks/use-settings-logic"
 import {
     UserSettingsTab,
     NotificationSettingsTab,
@@ -20,56 +21,70 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-4 sm:p-6">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Impostazioni</h2>
-                <p className="text-muted-foreground">Configura le impostazioni del sistema e dell'account</p>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Impostazioni</h2>
+                <p className="text-sm sm:text-base text-muted-foreground">Configura le impostazioni del sistema e dell'account</p>
             </div>
 
-            <form onSubmit={settings.handleSubmit(settings.onSubmit)}>
-                <Tabs value={settings.activeTab} onValueChange={settings.setActiveTab} className="space-y-4">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="user" className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            Utente
+            <form onSubmit={settings.handleSubmit(settings.onSubmit)} className="w-full">
+                <Tabs value={settings.activeTab} onValueChange={settings.setActiveTab} className="w-full space-y-4">
+                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+                        <TabsTrigger value="user" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2 sm:px-3">
+                            <User className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="hidden min-[380px]:block truncate">Utente</span>
                         </TabsTrigger>
-                        <TabsTrigger value="notifications" className="flex items-center gap-2">
-                            <Bell className="h-4 w-4" />
-                            Notifiche
+                        <TabsTrigger value="notifications" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2 sm:px-3">
+                            <Bell className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="hidden min-[380px]:block truncate">Notifiche</span>
                         </TabsTrigger>
-                        <TabsTrigger value="security" className="flex items-center gap-2">
-                            <Shield className="h-4 w-4" />
-                            Sicurezza
+                        <TabsTrigger value="security" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2 sm:px-3">
+                            <Shield className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="hidden min-[380px]:block truncate">Sicurezza</span>
                         </TabsTrigger>
-                        <TabsTrigger value="system" className="flex items-center gap-2">
-                            <Database className="h-4 w-4" />
-                            Sistema
+                        <TabsTrigger value="system" className="flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2 sm:px-3">
+                            <Database className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="hidden min-[380px]:block truncate">Sistema</span>
                         </TabsTrigger>
                     </TabsList>
 
-                    <UserSettingsTab
-                        errors={settings.errors}
-                        register={settings.register}
-                        control={settings.control}
-                        isSubmitting={settings.isSubmitting}
-                    />
+                    <div className="w-full overflow-hidden">
+                        <UserSettingsTab
+                            errors={settings.errors}
+                            register={settings.register}
+                            control={settings.control}
+                        />
 
-                    <NotificationSettingsTab
-                        control={settings.control}
-                        isSubmitting={settings.isSubmitting}
-                    />
+                        <NotificationSettingsTab control={settings.control} />
 
-                    <SecuritySettingsTab
-                        control={settings.control}
-                        isSubmitting={settings.isSubmitting}
-                    />
+                        <SecuritySettingsTab control={settings.control} />
 
-                    <SystemSettingsTab
-                        control={settings.control}
-                        watch={settings.watch}
-                        isSubmitting={settings.isSubmitting}
-                    />
+                        <SystemSettingsTab
+                            control={settings.control}
+                            watch={settings.watch}
+                        />
+                    </div>
                 </Tabs>
+
+                <div className="flex justify-end pt-6">
+                    <Button
+                        type="submit"
+                        disabled={settings.isSubmitting}
+                        className="flex items-center gap-2 w-full sm:w-auto"
+                    >
+                        {settings.isSubmitting ? (
+                            <>
+                                <RefreshCw className="h-4 w-4 animate-spin" />
+                                Salvataggio...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="h-4 w-4" />
+                                Salva Impostazioni
+                            </>
+                        )}
+                    </Button>
+                </div>
             </form>
         </div>
     )

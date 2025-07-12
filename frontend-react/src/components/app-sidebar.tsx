@@ -46,7 +46,7 @@ const AppSideBar: React.FC = () => {
         <Sidebar collapsible="icon">
             <SidebarHeader className="flex flex-row items-center justify-between h-16 px-6">
                 <h1 className="text-xl font-bold">Gestionale</h1>
-                <SidebarTrigger className="md:hidden" />
+                <SidebarTrigger className="xl:hidden" />
             </SidebarHeader>
 
             <SidebarContent>

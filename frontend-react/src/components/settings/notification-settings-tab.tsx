@@ -1,21 +1,18 @@
 import type React from 'react';
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
-import { Save, RefreshCw } from "lucide-react"
 import { Controller } from "react-hook-form";
-import type { UserSettings } from '@/store/slices/user-settings-slice';
+import type { SettingsFormData } from '@/types/settings';
 import type { Control } from 'react-hook-form';
 
 interface NotificationSettingsTabProps {
-    control: Control<UserSettings>;
-    isSubmitting: boolean;
+    control: Control<SettingsFormData>;
 }
 
-const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = ({ control, isSubmitting }) => {
+const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = ({ control }) => {
     return (
         <TabsContent value="notifications" className="space-y-4">
             <Card>
@@ -150,15 +147,6 @@ const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = ({ contr
                             </div>
                         </div>
                     </div>
-
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? (
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Save className="mr-2 h-4 w-4" />
-                        )}
-                        Salva Impostazioni
-                    </Button>
                 </CardContent>
             </Card>
         </TabsContent>

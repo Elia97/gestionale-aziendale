@@ -1,23 +1,21 @@
 import type React from 'react';
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Save, RefreshCw } from "lucide-react"
 import { Controller } from "react-hook-form";
 import type { UseFormRegister, Control, FieldErrors } from "react-hook-form";
-import type { UserSettings } from "@/store/slices/user-settings-slice"
+import type { SettingsFormData } from "@/types/settings";
+import { getUserRoleLabel } from "@/lib/constants/user-roles";
 
 interface UserSettingsTabProps {
-    errors: FieldErrors<UserSettings>;
-    register: UseFormRegister<UserSettings>;
-    control: Control<UserSettings>;
-    isSubmitting: boolean;
+    errors: FieldErrors<SettingsFormData>;
+    register: UseFormRegister<SettingsFormData>;
+    control: Control<SettingsFormData>;
 }
 
-const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, control, isSubmitting }) => {
+const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, control }) => {
     return (
         <TabsContent value="user" className="space-y-4">
             <Card>
@@ -26,7 +24,7 @@ const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, con
                     <CardDescription>Gestisci le tue informazioni personali e preferenze</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="first-name">Nome</Label>
                             <Input
@@ -67,7 +65,7 @@ const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, con
                             )}
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="user-email">Email</Label>
                             <Input
@@ -109,14 +107,19 @@ const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, con
                             )}
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="role">Ruolo</Label>
                             <Controller
                                 name="user.role"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} value={field.value ?? ""} disabled />
+                                    <Input
+                                        {...field}
+                                        value={getUserRoleLabel(field.value)}
+                                        disabled
+                                        className="bg-gray-50"
+                                    />
                                 )}
                             />
                         </div>
@@ -131,7 +134,7 @@ const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, con
                             />
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="language">Lingua</Label>
                             <Controller
@@ -202,10 +205,6 @@ const UserSettingsTab: React.FC<UserSettingsTabProps> = ({ errors, register, con
                             />
                         </div>
                     </div>
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                        Salva Impostazioni
-                    </Button>
                 </CardContent>
             </Card>
         </TabsContent>

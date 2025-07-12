@@ -1,5 +1,4 @@
 import type React from 'react';
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,17 +6,15 @@ import { TabsContent } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
-import { Save, RefreshCw } from "lucide-react"
 import { Controller } from "react-hook-form";
-import type { UserSettings } from '@/store/slices/user-settings-slice';
+import type { SettingsFormData } from '@/types/settings';
 import type { Control } from 'react-hook-form';
 
 interface SecuritySettingsTabProps {
-    control: Control<UserSettings>;
-    isSubmitting: boolean;
+    control: Control<SettingsFormData>;
 }
 
-const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({ control, isSubmitting }) => {
+const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({ control }) => {
     return (
         <TabsContent value="security" className="space-y-4">
             <Card>
@@ -46,7 +43,7 @@ const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({ control, isSu
 
                     <Separator />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="session-timeout">Timeout Sessione (minuti)</Label>
                             <Controller
@@ -129,15 +126,6 @@ const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({ control, isSu
                         />
                         <p className="text-sm text-muted-foreground">Inserisci gli indirizzi IP separati da virgola</p>
                     </div>
-
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? (
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Save className="mr-2 h-4 w-4" />
-                        )}
-                        Salva Impostazioni
-                    </Button>
                 </CardContent>
             </Card>
         </TabsContent>

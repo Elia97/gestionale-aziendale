@@ -16,8 +16,40 @@ class WarehouseFactory extends Factory
      */
     public function definition(): array
     {
+        static $warehouseNames;
+
+        if (! $warehouseNames) {
+            $warehouseNames = [
+                'Magazzino Centrale',
+                'Deposito Nord',
+                'Deposito Sud',
+                'Magazzino Est',
+                'Magazzino Ovest',
+                'Centro Logistico Milano',
+                'Deposito Roma',
+                'Hub Distribuzione Torino',
+                'Magazzino Napoli',
+                'Centro Smistamento Bologna',
+                'Deposito Firenze',
+                'Magazzino Venezia',
+                'Hub Logistico Genova',
+                'Deposito Principale',
+                'Magazzino Secondario',
+                'Centro Distribuzione',
+                'Punto Raccolta A',
+                'Punto Raccolta B',
+                'Deposito Express'
+            ];
+            shuffle($warehouseNames);
+        }
+
+        $warehouseName = array_pop($warehouseNames);
+        if (! $warehouseName) {
+            $warehouseName = 'Magazzino ' . $this->faker->company();
+        }
+
         return [
-            'name' => $this->faker->company(),
+            'name' => $warehouseName,
             'address' => $this->faker->address()
         ];
     }

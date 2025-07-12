@@ -38,12 +38,13 @@ const StockManagementModal: React.FC<StockManagementModalProps> = ({
 }) => {
     return (
         <Dialog open={isStockModalOpen} onOpenChange={setIsStockModalOpen}>
-            <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+                <DialogHeader className="flex-shrink-0">
                     <DialogTitle>Gestione Giacenze: {selectedWarehouse?.name}</DialogTitle>
                     <DialogDescription>Gestisci le quantità dei prodotti in questo magazzino.</DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+
+                <div className="grid gap-4 py-4 overflow-y-auto flex-1 pr-2 -mr-2">
                     {products.map((product) => (
                         <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
                             <div className="flex-1">
@@ -76,7 +77,8 @@ const StockManagementModal: React.FC<StockManagementModalProps> = ({
                         </Alert>
                     )}
                 </div>
-                <DialogFooter>
+
+                <DialogFooter className="flex-shrink-0">
                     <Button variant="outline" onClick={() => setIsStockModalOpen(false)}>
                         Annulla
                     </Button>

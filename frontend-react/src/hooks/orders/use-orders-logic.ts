@@ -39,7 +39,7 @@ export function useOrdersLogic() {
     const totalOrders = orders.length;
     const totalRevenue = orders
       .filter((order) => order.status === "completed")
-      .reduce((sum, order) => sum + order.total, 0);
+      .reduce((sum, order) => sum + Number(order.total), 0);
     const pendingOrders = orders.filter(
       (order) => order.status === "pending"
     ).length;

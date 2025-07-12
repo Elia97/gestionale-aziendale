@@ -6,10 +6,16 @@ import {
   updateUserSettings,
 } from "@/store/thunks/userSettings-thunks";
 import { useForm } from "react-hook-form";
-import type { UserSettings } from "@/store/slices/user-settings-slice";
+import type { SettingsFormData } from "@/types/settings";
 import { updateUser } from "@/store/thunks/auth-thunks";
 
-type UserFieldKeys = "firstName" | "lastName" | "email" | "phone";
+type UserFieldKeys =
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "phone"
+  | "role"
+  | "department";
 type UserSettingsFieldKeys =
   | "language"
   | "timezone"
@@ -44,18 +50,21 @@ export function useSettingsLogic() {
     watch,
     control,
     formState: { isSubmitting, errors, dirtyFields },
-  } = useForm<UserSettings>({
+    getValues,
+  } = useForm<SettingsFormData>({
     defaultValues: {
       user: {
+        id: 0,
         firstName: "",
         lastName: "",
         email: "",
+        email_verified_at: null,
         phone: "",
-        role: "Operator",
-        department: "IT",
+        role: "",
+        department: "",
       },
       language: "",
-      timezone: "",
+      timezone: "Europe/Rome", // Default timezone italiano
       emailNotifications: false,
       pushNotifications: false,
       smsNotifications: false,
@@ -83,21 +92,36 @@ export function useSettingsLogic() {
 
   // Quando i dati arrivano, popola il form
   useEffect(() => {
-    if (userSettings) {
+    if (user && userSettings) {
+      // Valida il timezone dal backend
+      const validTimezones = [
+        "Europe/Rome",
+        "Europe/London",
+        "Europe/Paris",
+        "America/New_York",
+        "America/Adak",
+      ];
+      const userTimezone =
+        userSettings.timezone && validTimezones.includes(userSettings.timezone)
+          ? userSettings.timezone
+          : "Europe/Rome"; // Default se timezone non valido
+
       reset({
         user: {
-          firstName: user?.firstName || "",
-          lastName: user?.lastName || "",
-          email: user?.email || "",
-          phone: user?.phone || "",
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          role: user.role || "",
+          department: user.department || "",
         },
         language: userSettings.language || "",
-        timezone: userSettings.timezone || "",
-        emailNotifications: Boolean(userSettings.emailNotifications) || false,
-        pushNotifications: Boolean(userSettings.pushNotifications) || false,
-        smsNotifications: Boolean(userSettings.smsNotifications) || false,
-        orderUpdates: Boolean(userSettings.orderUpdates) || false,
-        stockAlerts: Boolean(userSettings.stockAlerts) || false,
+        timezone: userTimezone,
+        emailNotifications: userSettings.emailNotifications || false,
+        pushNotifications: userSettings.pushNotifications || false,
+        smsNotifications: userSettings.smsNotifications || false,
+        orderUpdates: userSettings.orderUpdates || false,
+        stockAlerts: userSettings.stockAlerts || false,
         systemMaintenance: userSettings.systemMaintenance || false,
         marketingEmails: userSettings.marketingEmails || false,
         twoFactorAuth: userSettings.twoFactorAuth || false,
@@ -109,12 +133,12 @@ export function useSettingsLogic() {
         dateFormat: userSettings.dateFormat || "DD/MM/YYYY",
         timeFormat: userSettings.timeFormat || "24h",
         backupFrequency: userSettings.backupFrequency || "weekly",
-        maintenanceMode: Boolean(userSettings.maintenanceMode) || false,
+        maintenanceMode: userSettings.maintenanceMode || false,
       });
     }
   }, [userSettings, user, reset]);
 
-  const onSubmit = async (data: UserSettings) => {
+  const onSubmit = async (data: SettingsFormData) => {
     try {
       // Controlla se ci sono modifiche nei campi user
       const userFields: UserFieldKeys[] = [
@@ -122,6 +146,8 @@ export function useSettingsLogic() {
         "lastName",
         "email",
         "phone",
+        "role",
+        "department",
       ];
       const isUserDirty = userFields.some((field) => dirtyFields.user?.[field]);
 
@@ -214,5 +240,6 @@ export function useSettingsLogic() {
     isSubmitting,
     errors,
     onSubmit,
+    getValues,
   };
 }

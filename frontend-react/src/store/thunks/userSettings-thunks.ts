@@ -1,31 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
-interface UserSettings {
+// Interfaccia per le impostazioni utente (dati dal/al backend)
+interface UserSettingsData {
   language: string;
   timezone: string;
-  emailNotifications: boolean | number;
-  pushNotifications: boolean | number;
-  smsNotifications: boolean | number;
-  orderUpdates: boolean | number;
-  stockAlerts: boolean | number;
-  systemMaintenance: boolean | number;
-  marketingEmails: boolean | number;
-  twoFactorAuth: boolean | number;
+  emailNotifications: number; // 0 o 1 nel database
+  pushNotifications: number;
+  smsNotifications: number;
+  orderUpdates: number;
+  stockAlerts: number;
+  systemMaintenance: number;
+  marketingEmails: number;
+  twoFactorAuth: number;
   sessionTimeout: number;
   passwordExpiry: number;
   loginAttempts: number;
-  ipWhitelist: string;
+  ipWhitelist: string | null;
   currency: string;
   dateFormat: string;
   timeFormat: string;
   backupFrequency: string;
-  maintenanceMode: boolean | number;
+  maintenanceMode: number;
 }
 
 // Carica le impostazioni dell'utente (GET)
 export const fetchUserSettings = createAsyncThunk<
-  UserSettings,
+  UserSettingsData,
   void,
   { rejectValue: string }
 >("userSettings/fetch", async (_, thunkAPI) => {
@@ -51,7 +52,7 @@ export const fetchUserSettings = createAsyncThunk<
     }
 
     const data = await response.json();
-    return data as UserSettings;
+    return data as UserSettingsData;
   } catch {
     return thunkAPI.rejectWithValue("Network error");
   }
@@ -59,14 +60,17 @@ export const fetchUserSettings = createAsyncThunk<
 
 // Aggiorna le impostazioni dell'utente (PUT)
 export const updateUserSettings = createAsyncThunk<
-  UserSettings,
-  UserSettings,
+  UserSettingsData,
+  UserSettingsData,
   { rejectValue: string }
 >("userSettings/update", async (settings, thunkAPI) => {
   try {
     // Recupera lo stato globale
     const state = thunkAPI.getState() as RootState;
     const token = state.auth.token;
+
+    if (!token) throw new Error("Token mancante");
+
     const response = await fetch("http://localhost:8000/api/users/settings", {
       method: "PUT",
       headers: {
@@ -84,7 +88,7 @@ export const updateUserSettings = createAsyncThunk<
     }
 
     const data = await response.json();
-    return data as UserSettings;
+    return data as UserSettingsData;
   } catch {
     return thunkAPI.rejectWithValue("Network error");
   }

@@ -30,13 +30,14 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
     const { register, formState: { errors } } = form;
     return (
         <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-            <DialogContent className="sm:max-w-[500px]">
-                <form onSubmit={onSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Nuovo Prodotto</DialogTitle>
-                        <DialogDescription>Inserisci i dati del nuovo prodotto.</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col">
+                <DialogHeader className="flex-shrink-0">
+                    <DialogTitle>Nuovo Prodotto</DialogTitle>
+                    <DialogDescription>Inserisci i dati del nuovo prodotto.</DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0">
+                    <div className="grid gap-4 py-4 overflow-y-auto flex-1 pr-2 -mr-2">
                         <div className="space-y-2">
                             <Label htmlFor="code">Codice Prodotto *</Label>
                             <Input
@@ -117,7 +118,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
                             </Alert>
                         )}
                     </div>
-                    <DialogFooter>
+
+                    <DialogFooter className="flex-shrink-0">
                         <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
                             Annulla
                         </Button>

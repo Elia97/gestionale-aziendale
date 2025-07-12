@@ -1,5 +1,4 @@
 import type React from 'react';
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent } from "@/components/ui/tabs"
@@ -7,18 +6,17 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Save, RefreshCw, AlertTriangle } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { Controller } from "react-hook-form";
-import type { UserSettings } from '@/store/slices/user-settings-slice';
+import type { SettingsFormData } from '@/types/settings';
 import type { Control, UseFormWatch } from 'react-hook-form';
 
 interface SystemSettingsTabProps {
-    control: Control<UserSettings>;
-    watch: UseFormWatch<UserSettings>;
-    isSubmitting: boolean;
+    control: Control<SettingsFormData>;
+    watch: UseFormWatch<SettingsFormData>;
 }
 
-const SystemSettingsTab: React.FC<SystemSettingsTabProps> = ({ control, watch, isSubmitting }) => {
+const SystemSettingsTab: React.FC<SystemSettingsTabProps> = ({ control, watch }) => {
     return (
         <TabsContent value="system" className="space-y-4">
             <Card>
@@ -28,7 +26,7 @@ const SystemSettingsTab: React.FC<SystemSettingsTabProps> = ({ control, watch, i
                 </CardHeader>
                 <CardContent className="space-y-4">
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="currency">Valuta</Label>
                             <Controller
@@ -91,7 +89,7 @@ const SystemSettingsTab: React.FC<SystemSettingsTabProps> = ({ control, watch, i
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="time-format">Formato Ora</Label>
                             <Controller
@@ -211,15 +209,6 @@ const SystemSettingsTab: React.FC<SystemSettingsTabProps> = ({ control, watch, i
                             )}
                         </div>
                     </div>
-
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? (
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Save className="mr-2 h-4 w-4" />
-                        )}
-                        Salva Impostazioni
-                    </Button>
                 </CardContent>
             </Card>
         </TabsContent>

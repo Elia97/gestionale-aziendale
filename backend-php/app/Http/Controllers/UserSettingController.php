@@ -19,15 +19,15 @@ class UserSettingController extends Controller
             'language' => ['required', 'string', 'in:it,en,de'],
             'timezone' => ['required', 'string'],
 
-            'emailNotifications' => ['required', 'boolean'],
-            'pushNotifications' => ['required', 'boolean'],
-            'smsNotifications' => ['required', 'boolean'],
-            'orderUpdates' => ['required', 'boolean'],
-            'stockAlerts' => ['required', 'boolean'],
-            'systemMaintenance' => ['required', 'boolean'],
-            'marketingEmails' => ['required', 'boolean'],
+            'emailNotifications' => ['required', 'in:0,1,true,false'],
+            'pushNotifications' => ['required', 'in:0,1,true,false'],
+            'smsNotifications' => ['required', 'in:0,1,true,false'],
+            'orderUpdates' => ['required', 'in:0,1,true,false'],
+            'stockAlerts' => ['required', 'in:0,1,true,false'],
+            'systemMaintenance' => ['required', 'in:0,1,true,false'],
+            'marketingEmails' => ['required', 'in:0,1,true,false'],
 
-            'twoFactorAuth' => ['required', 'boolean'],
+            'twoFactorAuth' => ['required', 'in:0,1,true,false'],
             'sessionTimeout' => ['required', 'integer', 'min:1'],
             'passwordExpiry' => ['required', 'integer', 'min:1'],
             'loginAttempts' => ['required', 'integer', 'min:1'],
@@ -37,13 +37,32 @@ class UserSettingController extends Controller
             'dateFormat' => ['required', 'string'],
             'timeFormat' => ['required', 'string'],
             'backupFrequency' => ['required', 'string'],
-            'maintenanceMode' => ['required', 'boolean'],
+            'maintenanceMode' => ['required', 'in:0,1,true,false'],
         ]);
+
+        // Converte i valori boolean in 0/1 per il database
+        $booleanFields = [
+            'emailNotifications',
+            'pushNotifications',
+            'smsNotifications',
+            'orderUpdates',
+            'stockAlerts',
+            'systemMaintenance',
+            'marketingEmails',
+            'twoFactorAuth',
+            'maintenanceMode'
+        ];
+
+        foreach ($booleanFields as $field) {
+            if (isset($validated[$field])) {
+                $validated[$field] = filter_var($validated[$field], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+            }
+        }
 
         $user = Auth::user();
 
         $user->userSetting->update($validated);
 
-        return response()->json(['message' => 'Impostazioni aggiornate con successo.']);
+        return response()->json($user->userSetting->fresh());
     }
 }

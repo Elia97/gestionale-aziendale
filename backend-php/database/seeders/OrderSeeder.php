@@ -8,24 +8,31 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        // Creiamo 50 ordini
-        for ($i = 0; $i < 50; $i++) {
-            // Creiamo l'ordine con total inizialmente a 0
-            $order = Order::create([
-                'customer_id' => Customer::inRandomOrder()->value('id'),
-                'user_id' => User::where('role', 'operator')->inRandomOrder()->value('id'),
-                'status' => 'pending',
-                'total' => 0,
-            ]);
+        // Gli ordini sono distribuiti negli ultimi 3 mesi
+        $startDate = Carbon::now()->subMonths(3);
+        $endDate = Carbon::now();
+
+        // Creiamo 80 ordini con date realistiche
+        for ($i = 0; $i < 80; $i++) {
+            // Data di creazione dell'ordine
+            $orderCreatedAt = fake()->dateTimeBetween($startDate, $endDate);
+
+            // Creiamo l'ordine con la factory ma impostiamo date personalizzate
+            $order = Order::factory()->make()->toArray();
+            $order['created_at'] = $orderCreatedAt;
+            $order['updated_at'] = fake()->dateTimeBetween($orderCreatedAt, 'now');
+
+            $order = Order::create($order);
 
             $total = 0;
 
-            // Numero casuale di articoli nell'ordine
+            // Numero casuale di articoli nell'ordine (da 1 a 5)
             $itemsCount = rand(1, 5);
 
             for ($j = 0; $j < $itemsCount; $j++) {
@@ -34,8 +41,14 @@ class OrderSeeder extends Seeder
                 // Usiamo il prezzo reale del prodotto
                 $price = $product->price;
 
-                // Quantità casuale
+                // Quantità casuale da 1 a 10
                 $quantity = rand(1, 10);
+
+                // Data di creazione dell'order item (stesso giorno dell'ordine o poco dopo)
+                $itemCreatedAt = fake()->dateTimeBetween(
+                    $orderCreatedAt,
+                    Carbon::parse($orderCreatedAt)->addDays(1)
+                );
 
                 // Creiamo l'order item
                 OrderItem::create([
@@ -43,13 +56,15 @@ class OrderSeeder extends Seeder
                     'product_id' => $product->id,
                     'quantity' => $quantity,
                     'price' => $price,
+                    'created_at' => $itemCreatedAt,
+                    'updated_at' => fake()->dateTimeBetween($itemCreatedAt, 'now'),
                 ]);
 
                 // Aggiorniamo il totale
                 $total += $price * $quantity;
             }
 
-            // Aggiorniamo il campo total dell'ordine
+            // Aggiorniamo il campo total dell'ordine con il calcolo reale
             $order->update(['total' => $total]);
         }
     }

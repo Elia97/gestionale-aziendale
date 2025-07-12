@@ -2,6 +2,7 @@ import type React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Building2 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface CustomersStatsProps {
     customers: Array<{
@@ -37,10 +38,8 @@ const CustomersStats: React.FC<CustomersStatsProps> = ({ customers, topCustomer 
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-bold">
-                        €
-                        {customers
-                            .reduce((sum, customer) => sum + (customer.total_spent || 0), 0)
-                            .toLocaleString("it-IT", { minimumFractionDigits: 2 })}
+                        {formatCurrency(Number(customers
+                            .reduce((sum, customer) => sum + (customer.total_spent || 0), 0)))}
                     </div>
                 </CardContent>
             </Card>

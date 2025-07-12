@@ -33,13 +33,14 @@ const EditWarehouseModal: React.FC<EditWarehouseModalProps> = ({
 
     return (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="sm:max-w-[425px]">
-                <form onSubmit={onSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Modifica Magazzino</DialogTitle>
-                        <DialogDescription>Modifica i dati del magazzino selezionato.</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+            <DialogContent className="sm:max-w-[425px] max-h-[90vh] flex flex-col">
+                <DialogHeader className="flex-shrink-0">
+                    <DialogTitle>Modifica Magazzino</DialogTitle>
+                    <DialogDescription>Modifica i dati del magazzino selezionato.</DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0">
+                    <div className="grid gap-4 py-4 overflow-y-auto flex-1 pr-2 -mr-2">
                         <div className="space-y-2">
                             <Label htmlFor="name">Nome Magazzino *</Label>
                             <Input
@@ -68,7 +69,8 @@ const EditWarehouseModal: React.FC<EditWarehouseModalProps> = ({
                             </Alert>
                         )}
                     </div>
-                    <DialogFooter>
+
+                    <DialogFooter className="flex-shrink-0">
                         <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
                             Annulla
                         </Button>

@@ -23,7 +23,7 @@ const CustomersFilters: React.FC<CustomersFiltersProps> = ({ searchTerm, setSear
                             placeholder="Cerca per nome, email o telefono..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-8"
+                            className="pl-8 text-xs"
                         />
                     </div>
                 </div>

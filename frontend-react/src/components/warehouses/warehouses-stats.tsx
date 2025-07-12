@@ -1,6 +1,7 @@
 import type React from 'react';
 import { WarehouseIcon, Package, Euro } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatCurrency } from '@/lib/utils';
 
 interface WarehousesStatsProps {
     stats: {
@@ -41,9 +42,7 @@ const WarehousesStats: React.FC<WarehousesStatsProps> = ({ stats }) => {
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-bold">
-                        €{(isNaN(stats.totalValue) ? 0 : stats.totalValue).toLocaleString("it-IT", {
-                            minimumFractionDigits: 2,
-                        })}
+                        {formatCurrency(Number(stats.totalValue))}
                     </div>
                 </CardContent>
             </Card>
@@ -54,7 +53,7 @@ const WarehousesStats: React.FC<WarehousesStatsProps> = ({ stats }) => {
                     <Package className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{(isNaN(stats.totalStock) ? 0 : stats.totalStock).toLocaleString("it-IT", {
+                    <div className="text-2xl font-bold">{Number(stats.totalStock).toLocaleString("it-IT", {
                         minimumFractionDigits: 0,
                     })}</div>
                 </CardContent>
