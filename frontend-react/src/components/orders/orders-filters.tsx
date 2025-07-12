@@ -3,7 +3,7 @@ import { Search } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { statusOptions } from "@/components/orders/status-badge"
+import { ORDER_STATUS_OPTIONS } from "@/lib/constants/order-status"
 
 interface OrdersFiltersProps {
   searchTerm: string;
@@ -36,7 +36,7 @@ const OrdersFilters: React.FC<OrdersFiltersProps> = ({ searchTerm, setSearchTerm
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tutti gli stati</SelectItem>
-              {statusOptions.map((status) => (
+              {ORDER_STATUS_OPTIONS.map((status) => (
                 <SelectItem key={status.value} value={status.value}>
                   {status.label}
                 </SelectItem>

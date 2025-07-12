@@ -2,6 +2,7 @@ import type React from 'react';
 import { Search } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { CATEGORY_LABELS } from "@/lib/constants/categories";
 
 interface ProductsFiltersProps {
     searchTerm: string;
@@ -35,7 +36,11 @@ const ProductsFilters: React.FC<ProductsFiltersProps> = ({ categories, categoryF
                         onChange={(e) => setCategoryFilter(e.target.value)}
                     >
                         <option value="all">Tutte le categorie</option>
-                        {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        {categories.map(cat => (
+                            <option key={cat} value={cat}>
+                                {CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] || cat}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </CardContent>

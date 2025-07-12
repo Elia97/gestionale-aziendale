@@ -10,6 +10,7 @@ import {
 import { useProductForm } from "./use-product-form";
 import type { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import { PRODUCT_CATEGORIES } from "@/lib/constants/categories";
 
 export function useProductsLogic() {
   const dispatch = useAppDispatch();
@@ -81,7 +82,7 @@ export function useProductsLogic() {
     [products, searchTerm, categoryFilter]
   );
 
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const categories = [...PRODUCT_CATEGORIES];
 
   const handleAddProduct = () => {
     form.reset({
@@ -89,7 +90,7 @@ export function useProductsLogic() {
       name: "",
       description: "",
       price: "",
-      category: "",
+      category: "informatica", // Valore di default valido
     });
     setServerError("");
     setIsAddModalOpen(true);

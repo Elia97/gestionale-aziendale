@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createProductValidator } from "@/lib/validation/product";
 import type { ProductFormValues } from "@/lib/validation/product";
+import {
+  PRODUCT_CATEGORIES,
+  type ProductCategory,
+} from "@/lib/constants/categories";
 
 export function useProductForm(
   products: Product[],
@@ -19,7 +23,7 @@ export function useProductForm(
       name: "",
       description: "",
       price: "",
-      category: "",
+      category: "informatica", // Valore di default valido
     },
     mode: "onBlur", // Validazione al blur per una migliore UX
   });
@@ -32,7 +36,11 @@ export function useProductForm(
         name: selectedProduct.name,
         description: selectedProduct.description || "",
         price: selectedProduct.price.toString(),
-        category: selectedProduct.category,
+        category: PRODUCT_CATEGORIES.includes(
+          selectedProduct.category as ProductCategory
+        )
+          ? (selectedProduct.category as ProductCategory)
+          : "informatica", // Fallback se la categoria non è valida
       });
     }
   }, [selectedProduct, form]);

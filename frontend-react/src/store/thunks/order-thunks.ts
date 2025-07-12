@@ -20,8 +20,12 @@ export const fetchOrders = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nel caricamento ordini");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -46,7 +50,10 @@ export const addOrder = createAsyncThunk(
         customer_id: orderData.customerId,
         user_id: auth.user.id, // l'utente loggato
         status: orderData.status ?? "pending",
-        products: orderData.products, // il backend dovrà gestire la creazione degli orderItems
+        products: orderData.products.map((p) => ({
+          product_id: p.productId,
+          quantity: p.quantity,
+        })),
       };
 
       const res = await fetch(BASE_URL, {
@@ -59,8 +66,12 @@ export const addOrder = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nell'aggiunta ordine");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -89,7 +100,10 @@ export const updateOrder = createAsyncThunk(
       const payload = {
         customer_id: orderData.customerId,
         status: orderData.status,
-        products: orderData.products,
+        products: orderData.products.map((p) => ({
+          product_id: p.productId,
+          quantity: p.quantity,
+        })),
       };
 
       const res = await fetch(`${BASE_URL}/${orderId}`, {
@@ -102,8 +116,12 @@ export const updateOrder = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nell'aggiornamento ordine");
       return await res.json();
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -124,8 +142,12 @@ export const deleteOrder = createAsyncThunk(
       });
       if (!res.ok) throw new Error("Errore nella cancellazione ordine");
       return orderId;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err: unknown) {
+      let errorMessage = "Unknown error";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );

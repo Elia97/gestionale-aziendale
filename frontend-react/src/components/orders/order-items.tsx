@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface OrderItemsProps {
     handleAddOrderItem: () => void;
     orderItems: { product_id: number; quantity: number; price: number }[];
-    handleUpdateOrderItem: (index: number, field: string, value: any) => void;
+    handleUpdateOrderItem: (index: number, field: string, value: number | string) => void;
     handleRemoveOrderItem: (index: number) => void;
     calculateOrderTotal: () => number;
 }

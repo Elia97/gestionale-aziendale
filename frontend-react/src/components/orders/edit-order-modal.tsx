@@ -18,7 +18,7 @@ import type { OrderFormValues } from "@/lib/validation/order"
 import type { Customer } from "@/store/slices/customer-slice"
 import type { Product } from "@/store/slices/product-slice"
 import type { Order } from '@/store/slices/order-slice';
-import { statusOptions } from "./status-badge"
+import { ORDER_STATUS_OPTIONS } from "@/lib/constants/order-status"
 
 interface EditOrderModalProps {
     isEditModalOpen: boolean;
@@ -94,7 +94,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {statusOptions.map((status) => (
+                                        {ORDER_STATUS_OPTIONS.map((status) => (
                                             <SelectItem key={status.value} value={status.value}>
                                                 {status.label}
                                             </SelectItem>

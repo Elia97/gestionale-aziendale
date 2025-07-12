@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Product } from "@/store/slices/product-slice";
+import { PRODUCT_CATEGORIES } from "@/lib/constants/categories";
 
 export const productFormSchema = z.object({
   code: z.string().min(1, { message: "Il codice è obbligatorio" }),
@@ -11,7 +12,9 @@ export const productFormSchema = z.object({
     .refine((v) => Number(v) > 0, {
       message: "Il prezzo deve essere maggiore di zero.",
     }),
-  category: z.string().min(1, { message: "La categoria è obbligatoria" }),
+  category: z.enum(PRODUCT_CATEGORIES, {
+    errorMap: () => ({ message: "Seleziona una categoria valida" }),
+  }),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;

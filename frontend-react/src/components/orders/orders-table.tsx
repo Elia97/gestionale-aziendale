@@ -46,8 +46,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ filteredOrders, handleDeleteO
                                 </TableCell>
                                 <TableCell>
                                     <div>
-                                        <div className="font-medium">{order.customer_name}</div>
-                                        <div className="text-sm text-muted-foreground">{order.customer_email}</div>
+                                        <div className="font-medium">{order.customer.name}</div>
+                                        <div className="text-sm text-muted-foreground">{order.customer.email}</div>
                                     </div>
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell">{order.created_at}</TableCell>

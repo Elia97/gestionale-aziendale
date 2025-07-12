@@ -1,5 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
+import type { User } from "./auth-slice";
+import type { Customer } from "./customer-slice";
 import {
   fetchOrders,
   addOrder,
@@ -10,10 +12,9 @@ import {
 export interface Order {
   id: number;
   customer_id: number;
-  customer_name: string;
-  customer_email: string;
+  customer: Customer;
   user_id: number;
-  user_name: string;
+  user: User;
   status: "pending" | "processing" | "completed" | "cancelled";
   total: number;
   created_at: string;

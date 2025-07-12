@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Layout from "@/components/layout"
+import ProtectedRoute from "@/routes/protected-route"
+import { Toaster } from "sonner"
 import {
     DashboardPage,
     CustomersPage,
@@ -7,10 +10,7 @@ import {
     WarehousesPage,
     SettingsPage,
     LoginPage
-} from "@/pages"
-import Layout from "@/components/layout"
-import ProtectedRoute from "@/routes/protected-route"
-import { Toaster } from "sonner"
+} from "@/routes/lazy-pages"
 
 export default function AppRoutes() {
     return (

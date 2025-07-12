@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertTriangle, Edit, Hash, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Product } from '@/store/slices/product-slice';
+import { CATEGORY_LABELS } from "@/lib/constants/categories";
 
 interface ProductTableProps {
     filteredProducts: Product[];
@@ -63,7 +64,7 @@ const ProductsTable: React.FC<ProductTableProps> = ({ filteredProducts, searchTe
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                         <div className="bg-destructive/10 text-destructive rounded px-2 py-1 text-xs font-medium">
-                                            {product.category}
+                                            {CATEGORY_LABELS[product.category as keyof typeof CATEGORY_LABELS] || product.category}
                                         </div>
                                     </TableCell>
                                     <TableCell>

@@ -1,23 +1,26 @@
 import type { Order } from '@/store/slices/order-slice';
 import type React from 'react';
 import { Badge } from "@/components/ui/badge"
+import { ORDER_STATUS_MAP } from "@/lib/constants/order-status";
 
 interface StatusBadgeProps {
     status: Order["status"]
 }
 
-export const statusOptions = [
-    { value: "pending", label: "In Attesa", color: "secondary" },
-    { value: "processing", label: "In Lavorazione", color: "default" },
-    { value: "completed", label: "Completato", color: "default" },
-    { value: "cancelled", label: "Annullato", color: "destructive" },
-]
-
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-    const statusConfig = statusOptions.find((s) => s.value === status)
+    const statusConfig = ORDER_STATUS_MAP[status as keyof typeof ORDER_STATUS_MAP];
+
+    if (!statusConfig) {
+        return (
+            <Badge variant="secondary" className="text-xs">
+                {status}
+            </Badge>
+        );
+    }
+
     return (
-        <Badge variant={statusConfig?.color as any} className="text-xs">
-            {statusConfig?.label}
+        <Badge variant={statusConfig.color} className="text-xs">
+            {statusConfig.label}
         </Badge>
     )
 };

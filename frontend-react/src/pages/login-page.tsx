@@ -5,30 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { loginUser } from "@/store/thunks/auth-thunks";
-import { selectAuth } from "@/store/slices/auth-slice";
-import { useNavigate } from "react-router-dom";
+import { useLoginForm } from "@/hooks/auth/use-login-form";
 
 export default function LoginPage() {
-    const dispatch = useAppDispatch();
-    const auth = useAppSelector(selectAuth); // selezioniamo loading/error/user/token
-    const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const { form, onSubmit, isLoading, error, fillDemoCredentials } = useLoginForm();
     const [showPassword, setShowPassword] = useState(false);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!formData.email || !formData.password) return;
-        await dispatch(loginUser(formData));
-        navigate("/")
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -44,22 +25,25 @@ export default function LoginPage() {
                 </CardHeader>
 
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={onSubmit} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                 <Input
                                     id="email"
-                                    name="email"
                                     type="email"
                                     placeholder="nome@azienda.com"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
                                     className="pl-10"
-                                    disabled={auth.loading}
+                                    disabled={isLoading}
+                                    {...form.register("email")}
                                 />
                             </div>
+                            {form.formState.errors.email && (
+                                <p className="text-sm text-red-600">
+                                    {form.formState.errors.email.message}
+                                </p>
+                            )}
                         </div>
 
                         <div className="space-y-2">
@@ -68,13 +52,11 @@ export default function LoginPage() {
                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                 <Input
                                     id="password"
-                                    name="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
                                     className="pl-10 pr-10"
-                                    disabled={auth.loading}
+                                    disabled={isLoading}
+                                    {...form.register("password")}
                                 />
                                 <Button
                                     type="button"
@@ -82,7 +64,7 @@ export default function LoginPage() {
                                     size="sm"
                                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    disabled={auth.loading}
+                                    disabled={isLoading}
                                 >
                                     {showPassword ? (
                                         <EyeOff className="h-4 w-4 text-gray-400" />
@@ -91,16 +73,21 @@ export default function LoginPage() {
                                     )}
                                 </Button>
                             </div>
+                            {form.formState.errors.password && (
+                                <p className="text-sm text-red-600">
+                                    {form.formState.errors.password.message}
+                                </p>
+                            )}
                         </div>
 
-                        {auth.error && (
+                        {error && (
                             <Alert variant="destructive">
-                                <AlertDescription>{auth.error}</AlertDescription>
+                                <AlertDescription>{error}</AlertDescription>
                             </Alert>
                         )}
 
-                        <Button type="submit" className="w-full" disabled={auth.loading}>
-                            {auth.loading ? "Accesso in corso..." : "Accedi"}
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? "Accesso in corso..." : "Accedi"}
                         </Button>
                     </form>
 
@@ -112,6 +99,16 @@ export default function LoginPage() {
                                 <strong>Admin:</strong> admin@example.com / password
                             </p>
                         </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2 text-xs"
+                            onClick={fillDemoCredentials}
+                            disabled={isLoading}
+                        >
+                            Compila credenziali demo
+                        </Button>
                     </div>
                 </CardContent>
             </Card>

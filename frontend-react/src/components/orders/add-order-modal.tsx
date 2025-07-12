@@ -17,7 +17,7 @@ import type { UseFormReturn, FieldArrayWithId } from "react-hook-form"
 import type { OrderFormValues } from "@/lib/validation/order"
 import type { Customer } from "@/store/slices/customer-slice"
 import type { Product } from "@/store/slices/product-slice"
-import { statusOptions } from "./status-badge"
+import { ORDER_STATUS_OPTIONS } from "@/lib/constants/order-status"
 
 interface AddOrderModalProps {
     isAddModalOpen: boolean;
@@ -90,7 +90,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {statusOptions.map((status) => (
+                                        {ORDER_STATUS_OPTIONS.map((status) => (
                                             <SelectItem key={status.value} value={status.value}>
                                                 {status.label}
                                             </SelectItem>
@@ -191,7 +191,7 @@ const AddOrderModal: React.FC<AddOrderModalProps> = ({
                         <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
                             Annulla
                         </Button>
-                        <Button type="submit" disabled={form.formState.isSubmitting}>
+                        <Button type="submit" disabled={form.formState.isSubmitting} onClick={() => setIsAddModalOpen(false)}>
                             {form.formState.isSubmitting ? "Salvataggio..." : "Crea Ordine"}
                         </Button>
                     </DialogFooter>

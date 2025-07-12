@@ -20,6 +20,7 @@ interface ViewOrderModalProps {
 }
 
 const ViewOrderModal: React.FC<ViewOrderModalProps> = ({ isViewModalOpen, setIsViewModalOpen, selectedOrder }) => {
+    console.log(selectedOrder)
     return (
         <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
             <DialogContent className="sm:max-w-[600px]">
@@ -32,8 +33,8 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({ isViewModalOpen, setIsV
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label className="text-sm font-medium">Cliente</Label>
-                                <div className="text-sm">{selectedOrder.customer_name}</div>
-                                <div className="text-xs text-muted-foreground">{selectedOrder.customer_email}</div>
+                                <div className="text-sm">{selectedOrder.customer.name}</div>
+                                <div className="text-xs text-muted-foreground">{selectedOrder.customer.email}</div>
                             </div>
                             <div>
                                 <Label className="text-sm font-medium">Stato</Label>
@@ -41,11 +42,17 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({ isViewModalOpen, setIsV
                             </div>
                             <div>
                                 <Label className="text-sm font-medium">Data Ordine</Label>
-                                <div className="text-sm">{selectedOrder.created_at}</div>
+                                <div className="text-sm">{new Date(selectedOrder.created_at).toLocaleDateString("IT-it", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                })}</div>
                             </div>
                             <div>
                                 <Label className="text-sm font-medium">Gestito da</Label>
-                                <div className="text-sm">{selectedOrder.user_name}</div>
+                                <div className="text-sm">{selectedOrder.user.firstName}</div>
                             </div>
                         </div>
 

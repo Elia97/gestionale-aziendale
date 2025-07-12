@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import type { UseFormReturn } from 'react-hook-form';
 import type { ProductFormValues } from '@/lib/validation/product';
 import { Controller } from 'react-hook-form';
+import { CATEGORY_LABELS } from "@/lib/constants/categories";
 
 interface EditProductModalProps {
     isEditModalOpen: boolean;
@@ -92,7 +93,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                                         <SelectContent>
                                             {categories.map((category) => (
                                                 <SelectItem key={category} value={category}>
-                                                    {category}
+                                                    {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] || category}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

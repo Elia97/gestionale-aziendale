@@ -88,7 +88,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
                         <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
                             Annulla
                         </Button>
-                        <Button type="submit" disabled={form.formState.isSubmitting}>
+                        <Button type="submit" disabled={form.formState.isSubmitting} onClick={() => setIsAddModalOpen(false)}>
                             {form.formState.isSubmitting ? "Salvataggio..." : "Salva Cliente"}
                         </Button>
                     </DialogFooter>

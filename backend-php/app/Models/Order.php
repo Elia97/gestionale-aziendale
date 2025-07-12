@@ -38,33 +38,9 @@ class Order extends Model
     }
 
     /**
-     * Attributi calcolati (appends)
-     */
-    protected $appends = [
-        'customer_name',
-        'customer_email',
-        'user_name',
-    ];
-
-    public function getCustomerNameAttribute(): ?string
-    {
-        return $this->customer?->name;
-    }
-
-    public function getCustomerEmailAttribute(): ?string
-    {
-        return $this->customer?->email;
-    }
-
-    public function getUserNameAttribute(): ?string
-    {
-        return $this->user?->name;
-    }
-
-    /**
      * Cast automatico per formattare created_at come stringa standard
      */
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime',
     ];
 }

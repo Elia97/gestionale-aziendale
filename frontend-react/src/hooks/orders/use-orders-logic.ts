@@ -54,8 +54,10 @@ export function useOrdersLogic() {
     return orders.filter((order) => {
       const matchesSearch =
         order.id.toString().includes(searchTerm) ||
-        order.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer_email.toLowerCase().includes(searchTerm.toLowerCase());
+        order.customer?.name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        order.customer?.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || order.status === statusFilter;

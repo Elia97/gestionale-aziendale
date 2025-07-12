@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { ORDER_STATUSES } from "@/lib/constants/order-status";
 
 export const orderFormSchema = z.object({
   customerId: z.string().min(1, { message: "Il cliente è obbligatorio" }),
-  status: z.enum(["pending", "processing", "completed", "cancelled"], {
+  status: z.enum(ORDER_STATUSES, {
     errorMap: () => ({ message: "Stato ordine non valido" }),
   }),
   products: z
