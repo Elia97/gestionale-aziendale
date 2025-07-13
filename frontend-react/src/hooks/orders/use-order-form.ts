@@ -1,10 +1,17 @@
 import { useEffect } from "react";
-import type { Order } from "@/store/slices/order-slice";
+import type { Order } from "@/types";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { orderFormSchema } from "@/lib/validation/order";
 import type { OrderFormValues } from "@/lib/validation/order";
 
+/**
+ * Hook per gestire il form di un ordine.
+ * Utilizza react-hook-form per la gestione del form e zod per la validazione.
+ * Gestisce la visualizzazione e l'aggiornamento dei dati dell'ordine selezionato.
+ * @param selectedOrder - Ordine attualmente selezionato, se presente.
+ * @returns Oggetto del form con metodi di registrazione, stato degli errori e valori predefiniti.
+ */
 export function useOrderForm(selectedOrder: Order | null) {
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderFormSchema),

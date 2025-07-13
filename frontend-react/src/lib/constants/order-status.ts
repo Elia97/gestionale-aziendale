@@ -8,6 +8,10 @@ export const ORDER_STATUSES = [
   "cancelled",
 ] as const;
 
+/**
+ * Tipo per gli stati degli ordini
+ * Utilizza i valori definiti in ORDER_STATUSES
+ */
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 /**

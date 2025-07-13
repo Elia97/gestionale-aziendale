@@ -1,6 +1,6 @@
 // hooks/useCustomersLogic.ts
 import { useEffect, useMemo, useState } from "react";
-import type { Customer } from "@/store/slices/customer-slice";
+import type { Customer } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   addCustomer,
@@ -12,6 +12,11 @@ import { useCustomerForm } from "./use-customer-form";
 import type { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
+/**
+ * Hook per gestire la logica dei clienti.
+ * Include operazioni CRUD, filtri e gestione dello stato del form.
+ * @returns Oggetto contenente metodi e stati per la gestione dei clienti.
+ */
 export function useCustomersLogic() {
   const dispatch = useAppDispatch();
   const customers = useAppSelector((state) => state.customers.list);

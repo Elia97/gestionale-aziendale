@@ -1,8 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { User } from "../slices/auth-slice";
+import type { User } from "@/types";
 import type { RootState } from "../index";
 
-// Async thunk per il login
+/**
+ * Async thunk per il login dell'utente.
+ * Invia una richiesta POST al server con le credenziali dell'utente.
+ * Se la richiesta ha successo, salva l'utente e il token in sessionStorage.
+ * @returns Un oggetto contenente l'utente e il token.
+ */
 export const loginUser = createAsyncThunk<
   { user: User; token: string }, // Return type
   { email: string; password: string }, // Argomento
@@ -28,7 +33,13 @@ export const loginUser = createAsyncThunk<
   }
 });
 
-// Async thunk per caricare user/token da sessionStorage
+/**
+ * Async thunk per il caricamento della sessione utente.
+ * Recupera il token e l'utente da sessionStorage.
+ * Se entrambi sono presenti, restituisce un oggetto contenente l'utente e il token.
+ * Altrimenti, restituisce null.
+ * @returns Un oggetto contenente l'utente e il token o null se non sono presenti.
+ */
 export const loadSession = createAsyncThunk<{
   user: User;
   token: string;
@@ -38,7 +49,13 @@ export const loadSession = createAsyncThunk<{
   return token && user ? { token, user: JSON.parse(user) } : null;
 });
 
-// Async thunk per l'aggiornamento delle informazioni utente
+/**
+ * Async thunk per l'aggiornamento delle impostazioni utente.
+ * Invia una richiesta PATCH al server con i nuovi dati dell'utente.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param data I dati dell'utente da aggiornare.
+ * @returns I dati aggiornati dell'utente.
+ */
 export const updateUser = createAsyncThunk(
   "user/update",
   async (

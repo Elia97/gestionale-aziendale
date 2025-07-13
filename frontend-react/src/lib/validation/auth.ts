@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+/**
+ * Schema di validazione per il form di login.
+ * Utilizza zod per definire le regole di validazione per email e password.
+ */
 export const loginFormSchema = z.object({
   email: z
     .string()

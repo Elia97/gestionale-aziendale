@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { Product } from "@/store/slices/product-slice";
+import type { Product } from "@/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createProductValidator } from "@/lib/validation/product";
@@ -9,6 +9,14 @@ import {
   type ProductCategory,
 } from "@/lib/constants/categories";
 
+/**
+ * Hook per gestire il form di un prodotto.
+ * Utilizza react-hook-form per la gestione del form e zod per la validazione.
+ * Gestisce la visualizzazione e l'aggiornamento dei dati del prodotto selezionato.
+ * @param products - Lista dei prodotti esistenti per la validazione del codice prodotto unico.
+ * @param selectedProduct - Prodotto attualmente selezionato, se presente.
+ * @returns Oggetto del form con metodi di registrazione, stato degli errori e valori predefiniti.
+ */
 export function useProductForm(
   products: Product[],
   selectedProduct: Product | null

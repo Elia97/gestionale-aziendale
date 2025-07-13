@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Product } from "@/store/slices/product-slice";
+import type { Product } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchProducts,
@@ -12,6 +12,11 @@ import type { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { PRODUCT_CATEGORIES } from "@/lib/constants/categories";
 
+/**
+ * Hook per gestire la logica dei prodotti.
+ * Include operazioni CRUD, filtri e gestione dello stato del form.
+ * @returns Oggetto contenente metodi e stati per la gestione dei prodotti.
+ */
 export function useProductsLogic() {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.list);

@@ -8,6 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
+/**
+ * Hook per gestire il form di login.
+ * Utilizza react-hook-form per la gestione del form e zod per la validazione.
+ * Gestisce l'autenticazione dell'utente e la navigazione dopo il login.
+ * @returns Oggetto contenente metodi del form, stato di autenticazione, funzioni di submit e helper per le credenziali demo.
+ */
 export function useLoginForm() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);

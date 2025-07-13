@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
-import type { User } from "./auth-slice";
-import type { Customer } from "./customer-slice";
+import type { Order, OrderState } from "@/types";
+
 import {
   fetchOrders,
   addOrder,
@@ -9,40 +9,17 @@ import {
   updateOrder,
 } from "../thunks/order-thunks";
 
-export interface Order {
-  id: number;
-  customer_id: number;
-  customer: Customer;
-  user_id: number;
-  user: User;
-  status: "pending" | "processing" | "completed" | "cancelled";
-  total: number;
-  created_at: string;
-  order_items: OrderItem[];
-}
-
-export interface OrderItem {
-  id: number;
-  order_id: number;
-  product_id: number;
-  product_code: string;
-  product_name: string;
-  quantity: number;
-  price: number;
-}
-
-interface OrderState {
-  list: Order[];
-  loading: boolean;
-  error: string | null;
-}
-
 const initialState: OrderState = {
   list: [],
   loading: false,
   error: null,
 };
 
+/**
+ * Slice per la gestione degli ordini.
+ * Include azioni per il recupero, aggiunta, cancellazione e aggiornamento degli ordini.
+ * Gestisce lo stato della lista degli ordini, lo stato di caricamento e gli errori.
+ */
 const orderSlice = createSlice({
   name: "orders",
   initialState,

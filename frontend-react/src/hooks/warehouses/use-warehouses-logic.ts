@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Warehouse } from "@/store/slices/warehouse-slice";
+import type { Warehouse } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchWarehouses,
@@ -13,6 +13,11 @@ import { useWarehouseForm } from "./use-warehouse-form";
 import type { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
+/**
+ * Hook per gestire la logica dei magazzini.
+ * Include operazioni CRUD, filtri e gestione dello stato del form.
+ * @returns Oggetto contenente metodi e stati per la gestione dei magazzini.
+ */
 export function useWarehousesLogic() {
   const dispatch = useAppDispatch();
   const warehouses = useAppSelector((state) => state.warehouses.list);

@@ -37,6 +37,11 @@ type UserSettingsFieldKeys =
   | "backupFrequency"
   | "maintenanceMode";
 
+/**
+ * Hook per gestire la logica delle impostazioni utente.
+ * Include il caricamento dei dati, la gestione del form e l'aggiornamento delle impostazioni.
+ * @returns Oggetto contenente metodi e stati per la gestione delle impostazioni.
+ */
 export function useSettingsLogic() {
   const [activeTab, setActiveTab] = useState("user");
   const dispatch = useAppDispatch();

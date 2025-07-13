@@ -24,7 +24,12 @@ interface UserSettingsData {
   maintenanceMode: number;
 }
 
-// Carica le impostazioni dell'utente (GET)
+/**
+ * Async thunk per il recupero delle impostazioni utente.
+ * Invia una richiesta GET al server per ottenere le impostazioni dell'utente.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @return Le impostazioni dell'utente.
+ */
 export const fetchUserSettings = createAsyncThunk<
   UserSettingsData,
   void,
@@ -58,7 +63,13 @@ export const fetchUserSettings = createAsyncThunk<
   }
 });
 
-// Aggiorna le impostazioni dell'utente (PUT)
+/**
+ * Async thunk per l'aggiornamento delle impostazioni utente.
+ * Invia una richiesta PUT al server con i nuovi dati delle impostazioni.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param settings I dati delle impostazioni da aggiornare.
+ * @return Le impostazioni aggiornate dell'utente.
+ */
 export const updateUserSettings = createAsyncThunk<
   UserSettingsData,
   UserSettingsData,

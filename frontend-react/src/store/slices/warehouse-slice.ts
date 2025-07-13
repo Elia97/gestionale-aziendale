@@ -7,21 +7,7 @@ import {
   updateWarehouse,
   updateStocks,
 } from "../thunks/warehouse-thunks";
-import type { Stock } from "./product-slice";
-
-export interface Warehouse {
-  id: number;
-  name: string;
-  address: string;
-  created_at: string;
-  stocks: Stock[];
-}
-
-interface WarehouseState {
-  list: Warehouse[];
-  loading: boolean;
-  error: string | null;
-}
+import type { Warehouse, WarehouseState } from "@/types";
 
 const initialState: WarehouseState = {
   list: [],
@@ -29,6 +15,11 @@ const initialState: WarehouseState = {
   error: null,
 };
 
+/**
+ * Slice per la gestione dei magazzini.
+ * Include azioni per il recupero, aggiunta, cancellazione e aggiornamento dei magazzini.
+ * Gestisce lo stato della lista dei magazzini, lo stato di caricamento e gli errori.
+ */
 const warehouseSlice = createSlice({
   name: "warehouses",
   initialState,

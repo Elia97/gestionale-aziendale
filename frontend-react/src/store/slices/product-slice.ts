@@ -6,34 +6,7 @@ import {
   deleteProduct,
   updateProduct,
 } from "../thunks/product-thunks";
-import type { Warehouse } from "./warehouse-slice";
-
-export interface Product {
-  id: number;
-  code: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  created_at: string;
-  stocks: Stock[];
-}
-
-export interface Stock {
-  id: number;
-  product_id: number;
-  warehouse_id: number;
-  warehouse_name: string;
-  quantity: number;
-  product: Product;
-  warehouse: Warehouse;
-}
-
-interface ProductState {
-  list: Product[];
-  loading: boolean;
-  error: string | null;
-}
+import type { Product, ProductState } from "@/types";
 
 const initialState: ProductState = {
   list: [],
@@ -41,6 +14,11 @@ const initialState: ProductState = {
   error: null,
 };
 
+/**
+ * Slice per la gestione dei prodotti.
+ * Include azioni per il recupero, aggiunta, cancellazione e aggiornamento dei prodotti.
+ * Gestisce lo stato della lista dei prodotti, lo stato di caricamento e gli errori.
+ */
 const productSlice = createSlice({
   name: "products",
   initialState,

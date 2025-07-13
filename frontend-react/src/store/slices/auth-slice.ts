@@ -2,25 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 import { loginUser, loadSession } from "../thunks/auth-thunks";
-
-// Definisci l'interfaccia dello stato auth
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  email_verified_at: string | null;
-  phone: string | null;
-  department: string | null;
-  role: string;
-}
-
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  loading: boolean;
-  error: string | null;
-}
+import type { User, AuthState } from "@/types/auth";
 
 // Stato iniziale
 const initialState: AuthState = {
@@ -30,6 +12,11 @@ const initialState: AuthState = {
   error: null,
 };
 
+/**
+ * Slice per la gestione dell'autenticazione.
+ * Include azioni per il login, logout e caricamento della sessione.
+ * Gestisce lo stato dell'utente, il token, lo stato di caricamento e gli errori.
+ */
 const authSlice = createSlice({
   name: "auth",
   initialState,

@@ -1,9 +1,20 @@
-import type React from 'react';
-import { Search } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ORDER_STATUS_OPTIONS } from "@/lib/constants/order-status"
+import { Search } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ORDER_STATUS_OPTIONS } from "@/lib/constants/order-status";
 
 interface OrdersFiltersProps {
   searchTerm: string;
@@ -12,7 +23,20 @@ interface OrdersFiltersProps {
   setStatusFilter: (status: string) => void;
 }
 
-const OrdersFilters: React.FC<OrdersFiltersProps> = ({ searchTerm, setSearchTerm, setStatusFilter, statusFilter }) => {
+/**
+ * Componente per i filtri della lista ordini.
+ * Include un campo di ricerca per numero ordine, cliente o email e un filtro per stato.
+ * @param searchTerm - Termine di ricerca corrente.
+ * @param setSearchTerm - Funzione per aggiornare il termine di ricerca.
+ * @param statusFilter - Stato corrente del filtro.
+ * @param setStatusFilter - Funzione per aggiornare lo stato del filtro.
+ */
+const OrdersFilters: React.FC<OrdersFiltersProps> = ({
+  searchTerm,
+  setSearchTerm,
+  setStatusFilter,
+  statusFilter,
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -44,8 +68,6 @@ const OrdersFilters: React.FC<OrdersFiltersProps> = ({ searchTerm, setSearchTerm
             </SelectContent>
           </Select>
         </div>
-
-
       </CardContent>
     </Card>
   );

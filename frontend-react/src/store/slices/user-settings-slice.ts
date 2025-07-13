@@ -40,6 +40,11 @@ const initialState: UserSettingsState = {
   error: null,
 };
 
+/**
+ * Slice per la gestione delle impostazioni utente.
+ * Include azioni per il recupero e l'aggiornamento delle impostazioni.
+ * Gestisce lo stato delle impostazioni, lo stato di caricamento e gli errori.
+ */
 const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState,

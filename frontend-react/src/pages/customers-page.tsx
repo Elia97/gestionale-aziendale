@@ -1,56 +1,60 @@
 import { useCustomersLogic } from "@/hooks/customers/use-customers-logic";
 import {
-    CustomersHeader,
-    CustomersStats,
-    CustomersFilters,
-    CustomersTable,
-    AddCustomerModal,
-    EditCustomerModal,
-    DeleteCustomerDialog
+  CustomersHeader,
+  CustomersStats,
+  CustomersFilters,
+  CustomersTable,
+  AddCustomerModal,
+  EditCustomerModal,
+  DeleteCustomerDialog,
 } from "@/components/customers";
 
+/**
+ * Pagina principale per la gestione dei clienti.
+ * Include intestazione, statistiche, filtri e tabella dei clienti.
+ * Gestisce l'aggiunta, modifica e cancellazione dei clienti tramite modali e dialoghi.
+ * @returns Componente React che rappresenta la pagina dei clienti.
+ */
 export default function CustomersPage(): React.JSX.Element {
-    const customersLogic = useCustomersLogic();
-    return (
-        <div className="space-y-6">
-            <CustomersHeader
-                handleAddCustomer={customersLogic.handleAddCustomer}
-            />
-            <CustomersStats
-                customers={customersLogic.customers}
-                topCustomer={customersLogic.topCustomer}
-            />
-            <CustomersFilters
-                searchTerm={customersLogic.searchTerm}
-                setSearchTerm={customersLogic.setSearchTerm}
-            />
-            <CustomersTable
-                filteredCustomers={customersLogic.filteredCustomers}
-                handleDeleteCustomer={customersLogic.handleDeleteCustomer}
-                handleEditCustomer={customersLogic.handleEditCustomer}
-                searchTerm={customersLogic.searchTerm}
-            />
-            <AddCustomerModal
-                isAddModalOpen={customersLogic.isAddModalOpen}
-                setIsAddModalOpen={customersLogic.setIsAddModalOpen}
-                form={customersLogic.form}
-                serverError={customersLogic.serverError}
-                onSubmit={customersLogic.onSubmit}
-            />
-            <EditCustomerModal
-                isEditModalOpen={customersLogic.isEditModalOpen}
-                setIsEditModalOpen={customersLogic.setIsEditModalOpen}
-                form={customersLogic.form}
-                serverError={customersLogic.serverError}
-                onSubmit={customersLogic.onSubmit}
-            />
-            <DeleteCustomerDialog
-                isDeleteDialogOpen={customersLogic.isDeleteDialogOpen}
-                setIsDeleteDialogOpen={customersLogic.setIsDeleteDialogOpen}
-                selectedCustomer={customersLogic.selectedCustomer}
-                handleConfirmDelete={customersLogic.handleConfirmDelete}
-                isDeleting={customersLogic.isDeleting}
-            />
-        </div>
-    )
+  const customersLogic = useCustomersLogic();
+  return (
+    <div className="space-y-6">
+      <CustomersHeader handleAddCustomer={customersLogic.handleAddCustomer} />
+      <CustomersStats
+        customers={customersLogic.customers}
+        topCustomer={customersLogic.topCustomer}
+      />
+      <CustomersFilters
+        searchTerm={customersLogic.searchTerm}
+        setSearchTerm={customersLogic.setSearchTerm}
+      />
+      <CustomersTable
+        filteredCustomers={customersLogic.filteredCustomers}
+        handleDeleteCustomer={customersLogic.handleDeleteCustomer}
+        handleEditCustomer={customersLogic.handleEditCustomer}
+        searchTerm={customersLogic.searchTerm}
+      />
+      <AddCustomerModal
+        isAddModalOpen={customersLogic.isAddModalOpen}
+        setIsAddModalOpen={customersLogic.setIsAddModalOpen}
+        form={customersLogic.form}
+        serverError={customersLogic.serverError}
+        onSubmit={customersLogic.onSubmit}
+      />
+      <EditCustomerModal
+        isEditModalOpen={customersLogic.isEditModalOpen}
+        setIsEditModalOpen={customersLogic.setIsEditModalOpen}
+        form={customersLogic.form}
+        serverError={customersLogic.serverError}
+        onSubmit={customersLogic.onSubmit}
+      />
+      <DeleteCustomerDialog
+        isDeleteDialogOpen={customersLogic.isDeleteDialogOpen}
+        setIsDeleteDialogOpen={customersLogic.setIsDeleteDialogOpen}
+        selectedCustomer={customersLogic.selectedCustomer}
+        handleConfirmDelete={customersLogic.handleConfirmDelete}
+        isDeleting={customersLogic.isDeleting}
+      />
+    </div>
+  );
 }

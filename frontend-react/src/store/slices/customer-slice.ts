@@ -1,4 +1,3 @@
-// store/slices/customerSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 import {
@@ -7,22 +6,7 @@ import {
   deleteCustomer,
   updateCustomer,
 } from "../thunks/customer-thunks";
-
-export interface Customer {
-  address: string;
-  total_spent: number;
-  orders_count: number;
-  phone: string;
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface CustomerState {
-  list: Customer[];
-  loading: boolean;
-  error: string | null;
-}
+import type { Customer, CustomerState } from "@/types";
 
 const initialState: CustomerState = {
   list: [],
@@ -30,6 +14,11 @@ const initialState: CustomerState = {
   error: null,
 };
 
+/**
+ * Slice per la gestione dei clienti.
+ * Include azioni per il recupero, aggiunta, cancellazione e aggiornamento dei clienti.
+ * Gestisce lo stato della lista dei clienti, lo stato di caricamento e gli errori.
+ */
 const customerSlice = createSlice({
   name: "customers",
   initialState,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Order } from "@/store/slices/order-slice";
+import type { Order } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchOrders,
@@ -12,6 +12,11 @@ import type { FieldValues } from "react-hook-form";
 import type { OrderFormValues } from "@/lib/validation/order";
 import { toast } from "sonner";
 
+/**
+ * Hook per gestire la logica degli ordini.
+ * Include operazioni CRUD, filtri e gestione dello stato del form.
+ * @returns Oggetto contenente metodi e stati per la gestione degli ordini.
+ */
 export function useOrdersLogic() {
   const dispatch = useAppDispatch();
   const orders = useAppSelector((state) => state.orders.list);

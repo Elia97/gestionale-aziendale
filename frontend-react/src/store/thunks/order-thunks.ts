@@ -4,7 +4,12 @@ import type { RootState } from "../index";
 // URL base centralizzato (consigliato)
 const BASE_URL = "http://localhost:8000/api/orders";
 
-// GET /api/orders
+/**
+ * Async thunk per il recupero della lista degli ordini.
+ * Invia una richiesta GET al server per ottenere tutti gli ordini.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @return La lista degli ordini.
+ */
 export const fetchOrders = createAsyncThunk(
   "orders/fetchAll",
   async (_, thunkAPI) => {
@@ -30,7 +35,13 @@ export const fetchOrders = createAsyncThunk(
   }
 );
 
-// POST /api/orders
+/**
+ * Async thunk per l'aggiunta di un nuovo ordine.
+ * Invia una richiesta POST al server con i dati dell'ordine.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param orderData I dati dell'ordine da aggiungere.
+ * @return L'ordine aggiunto.
+ */
 export const addOrder = createAsyncThunk(
   "orders/add",
   async (
@@ -76,7 +87,14 @@ export const addOrder = createAsyncThunk(
   }
 );
 
-// PUT /api/orders/:id
+/**
+ * Async thunk per l'aggiornamento di un ordine.
+ * Invia una richiesta PUT al server con i dati aggiornati dell'ordine.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param orderId L'ID dell'ordine da aggiornare.
+ * @param orderData I dati aggiornati dell'ordine.
+ * @return L'ordine aggiornato.
+ */
 export const updateOrder = createAsyncThunk(
   "orders/update",
   async (
@@ -126,7 +144,13 @@ export const updateOrder = createAsyncThunk(
   }
 );
 
-// DELETE /api/orders/:id
+/**
+ * Async thunk per la cancellazione di un ordine.
+ * Invia una richiesta DELETE al server per rimuovere l'ordine specificato.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param orderId L'ID dell'ordine da cancellare.
+ * @return L'ID dell'ordine cancellato.
+ */
 export const deleteOrder = createAsyncThunk(
   "orders/delete",
   async (orderId: number, thunkAPI) => {

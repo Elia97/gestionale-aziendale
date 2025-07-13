@@ -12,9 +12,14 @@ export default defineConfig({
     },
   },
   server: {
-    host: "0.0.0.0",
-    port: 5173,
-    strictPort: true,
+    host: true, // Equivalente a 0.0.0.0 ma più permissivo
+    port: 3000,
+    strictPort: false, // Permette fallback ad altre porte
+    hmr: {
+      port: 3001, // Porta separata per HMR
+    },
+    cors: true,
+    open: false,
   },
   build: {
     rollupOptions: {

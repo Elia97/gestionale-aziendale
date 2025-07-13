@@ -11,6 +11,10 @@ export const PRODUCT_CATEGORIES = [
   "audio",
 ] as const;
 
+/**
+ * Tipo per le categorie dei prodotti
+ * Utilizza i valori definiti in PRODUCT_CATEGORIES
+ */
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 
 /**

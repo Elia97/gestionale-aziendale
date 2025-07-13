@@ -16,7 +16,7 @@ class OrderSeeder extends Seeder
     {
         // Gli ordini sono distribuiti negli ultimi 3 mesi
         $startDate = Carbon::now()->subMonths(3);
-        $endDate = Carbon::now();
+        $endDate = Carbon::now()->subDays(2); // Lasciamo un margine di sicurezza
 
         // Creiamo 80 ordini con date realistiche
         for ($i = 0; $i < 80; $i++) {
@@ -50,6 +50,12 @@ class OrderSeeder extends Seeder
                     Carbon::parse($orderCreatedAt)->addDays(1)
                 );
 
+                // Assicuriamoci che updated_at non sia nel futuro
+                $maxUpdateDate = min(
+                    Carbon::parse($itemCreatedAt)->addDays(7)->getTimestamp(),
+                    Carbon::now()->getTimestamp()
+                );
+
                 // Creiamo l'order item
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -57,7 +63,7 @@ class OrderSeeder extends Seeder
                     'quantity' => $quantity,
                     'price' => $price,
                     'created_at' => $itemCreatedAt,
-                    'updated_at' => fake()->dateTimeBetween($itemCreatedAt, 'now'),
+                    'updated_at' => fake()->dateTimeBetween($itemCreatedAt, $maxUpdateDate),
                 ]);
 
                 // Aggiorniamo il totale

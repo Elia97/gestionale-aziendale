@@ -19,9 +19,18 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173'],
+    'allowed_origins' => [
+        'http://localhost:3000',
+        'http://172.26.95.170:3000',
+        'http://127.0.0.1:3000'
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^http:\/\/\d+\.\d+\.\d+\.\d+:3000$/',
+        '/^http:\/\/192\.168\.\d+\.\d+:3000$/',
+        '/^http:\/\/10\.\d+\.\d+\.\d+:3000$/',
+        '/^http:\/\/172\.\d+\.\d+\.\d+:3000$/'
+    ],
 
     'allowed_headers' => ['*'],
 

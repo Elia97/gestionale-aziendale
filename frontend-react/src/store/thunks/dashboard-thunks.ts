@@ -4,11 +4,17 @@ import { fetchCustomers } from "./customer-thunks";
 import { fetchProducts } from "./product-thunks";
 import { fetchOrders } from "./order-thunks";
 import { fetchWarehouses } from "./warehouse-thunks";
-import type { Order } from "../slices/order-slice";
-import type { Product } from "../slices/product-slice";
-import type { Customer } from "../slices/customer-slice";
-import type { Warehouse } from "../slices/warehouse-slice";
+import type { Order } from "@/types";
+import type { Product } from "@/types";
+import type { Customer } from "@/types";
+import type { Warehouse } from "@/types";
 
+/**
+ * Async thunk per il recupero dei dati del dashboard.
+ * Recupera i clienti, prodotti, ordini e magazzini e calcola le statistiche.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare le richieste.
+ * @returns Un oggetto contenente le statistiche del dashboard.
+ */
 export const fetchDashboardData = createAsyncThunk(
   "dashboard/fetchData",
   async (_, thunkAPI) => {

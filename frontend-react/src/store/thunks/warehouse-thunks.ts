@@ -1,8 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
-import type { Warehouse } from "../slices/warehouse-slice";
+import type { Warehouse } from "@/types";
 
-// GET /api/warehouses
+/**
+ * Async thunk per il recupero della lista dei magazzini.
+ * Invia una richiesta GET al server per ottenere tutti i magazzini.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @return La lista dei magazzini.
+ */
 export const fetchWarehouses = createAsyncThunk(
   "warehouses/fetchAll",
   async (_, thunkAPI) => {
@@ -32,7 +37,13 @@ export const fetchWarehouses = createAsyncThunk(
   }
 );
 
-// POST /api/warehouses
+/**
+ * Async thunk per l'aggiunta di un nuovo magazzino.
+ * Invia una richiesta POST al server con i dati del magazzino.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param warehouseData I dati del magazzino da aggiungere.
+ * @return Il magazzino aggiunto.
+ */
 export const addWarehouse = createAsyncThunk<
   Warehouse,
   { name: string; address: string }
@@ -63,7 +74,14 @@ export const addWarehouse = createAsyncThunk<
   }
 });
 
-// PUT /api/warehouses/:id
+/**
+ * Async thunk per l'aggiornamento di un magazzino.
+ * Invia una richiesta PUT al server con i dati aggiornati del magazzino.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param warehouseId L'ID del magazzino da aggiornare.
+ * @param warehouseData I dati aggiornati del magazzino.
+ * @return Il magazzino aggiornato.
+ */
 export const updateWarehouse = createAsyncThunk<
   Warehouse,
   { warehouseId: number; warehouseData: { name: string; address: string } }
@@ -97,7 +115,13 @@ export const updateWarehouse = createAsyncThunk<
   }
 });
 
-// DELETE /api/warehouses/:id
+/**
+ * Async thunk per la cancellazione di un magazzino.
+ * Invia una richiesta DELETE al server per rimuovere il magazzino specificato.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param id L'ID del magazzino da cancellare.
+ * @return L'ID del magazzino cancellato.
+ */
 export const deleteWarehouse = createAsyncThunk(
   "warehouses/delete",
   async (id: number, thunkAPI) => {
@@ -126,7 +150,14 @@ export const deleteWarehouse = createAsyncThunk(
   }
 );
 
-// PATCH /api/warehouses/:id/stocks
+/**
+ * Async thunk per l'aggiornamento delle giacenze di un magazzino.
+ * Invia una richiesta PATCH al server con le nuove giacenze dei prodotti.
+ * Utilizza il token di autenticazione dal Redux store per autorizzare la richiesta.
+ * @param warehouseId L'ID del magazzino da aggiornare.
+ * @param stocks Le giacenze dei prodotti da aggiornare.
+ * @return Il magazzino aggiornato con le nuove giacenze.
+ */
 export const updateStocks = createAsyncThunk<
   Warehouse,
   { warehouseId: number; stocks: { product_id: number; quantity: number }[] }

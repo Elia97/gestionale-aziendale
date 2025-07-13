@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { ORDER_STATUSES } from "@/lib/constants/order-status";
 
+/**
+ * Schema di validazione per il form degli ordini.
+ * Utilizza zod per definire le regole di validazione per cliente, stato, prodotti e prezzi.
+ */
 export const orderFormSchema = z.object({
   customerId: z.string().min(1, { message: "Il cliente è obbligatorio" }),
   status: z.enum(ORDER_STATUSES, {
@@ -40,4 +44,8 @@ export const orderFormSchema = z.object({
     ),
 });
 
+/**
+ * Tipo per i valori del form degli ordini.
+ * Utilizza zod per inferire i tipi dallo schema di validazione.
+ */
 export type OrderFormValues = z.infer<typeof orderFormSchema>;

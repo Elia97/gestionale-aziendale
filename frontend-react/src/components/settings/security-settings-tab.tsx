@@ -1,135 +1,162 @@
-import type React from 'react';
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { TabsContent } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
+import type React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { TabsContent } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { Controller } from "react-hook-form";
-import type { SettingsFormData } from '@/types/settings';
-import type { Control } from 'react-hook-form';
+import type { SettingsFormData } from "@/types/settings";
+import type { Control } from "react-hook-form";
 
 interface SecuritySettingsTabProps {
-    control: Control<SettingsFormData>;
+  control: Control<SettingsFormData>;
 }
 
-const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({ control }) => {
-    return (
-        <TabsContent value="security" className="space-y-4">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Impostazioni Sicurezza</CardTitle>
-                    <CardDescription>Configura le impostazioni di sicurezza e accesso</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+/**
+ * Componente per la configurazione delle impostazioni di sicurezza.
+ * Include opzioni per autenticazione a due fattori, timeout sessione,
+ * scadenza password, tentativi di login e whitelist IP.
+ * @param control - Oggetto di controllo del form per gestire lo stato delle impostazioni di sicurezza.
+ */
+const SecuritySettingsTab: React.FC<SecuritySettingsTabProps> = ({
+  control,
+}) => {
+  return (
+    <TabsContent value="security" className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Impostazioni Sicurezza</CardTitle>
+          <CardDescription>
+            Configura le impostazioni di sicurezza e accesso
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Autenticazione a Due Fattori</Label>
+              <p className="text-sm text-muted-foreground">
+                Aggiungi un livello extra di sicurezza al tuo account
+              </p>
+            </div>
+            <Controller
+              name="twoFactorAuth"
+              control={control}
+              render={({ field }) => (
+                <Switch
+                  checked={field.value ?? false}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+          </div>
 
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <Label>Autenticazione a Due Fattori</Label>
-                            <p className="text-sm text-muted-foreground">Aggiungi un livello extra di sicurezza al tuo account</p>
-                        </div>
-                        <Controller
-                            name="twoFactorAuth"
-                            control={control}
-                            render={({ field }) => (
-                                <Switch
-                                    checked={field.value ?? false}
-                                    onCheckedChange={field.onChange}
-                                />
-                            )}
-                        />
-                    </div>
+          <Separator />
 
-                    <Separator />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="session-timeout">Timeout Sessione (minuti)</Label>
+              <Controller
+                name="sessionTimeout"
+                control={control}
+                rules={{
+                  required: "Il timeout della sessione è obbligatorio",
+                  min: {
+                    value: 1,
+                    message: "Il timeout deve essere almeno 1 minuto",
+                  },
+                  max: {
+                    value: 1440,
+                    message: "Il timeout non può superare 1440 minuti (24 ore)",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input id="session-timeout" type="number" {...field} />
+                )}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password-expiry">
+                Scadenza Password (giorni)
+              </Label>
+              <Controller
+                name="passwordExpiry"
+                control={control}
+                rules={{
+                  required: "La scadenza della password è obbligatoria",
+                  min: {
+                    value: 1,
+                    message: "La scadenza deve essere almeno 1 giorno",
+                  },
+                  max: {
+                    value: 365,
+                    message: "La scadenza non può superare 365 giorni",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input id="password-expiry" type="number" {...field} />
+                )}
+              />
+            </div>
+          </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="session-timeout">Timeout Sessione (minuti)</Label>
-                            <Controller
-                                name="sessionTimeout"
-                                control={control}
-                                rules={{
-                                    required: "Il timeout della sessione è obbligatorio",
-                                    min: { value: 1, message: "Il timeout deve essere almeno 1 minuto" },
-                                    max: { value: 1440, message: "Il timeout non può superare 1440 minuti (24 ore)" }
-                                }}
-                                render={({ field }) => (
-                                    <Input
-                                        id="session-timeout"
-                                        type="number"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password-expiry">Scadenza Password (giorni)</Label>
-                            <Controller
-                                name="passwordExpiry"
-                                control={control}
-                                rules={{
-                                    required: "La scadenza della password è obbligatoria",
-                                    min: { value: 1, message: "La scadenza deve essere almeno 1 giorno" },
-                                    max: { value: 365, message: "La scadenza non può superare 365 giorni" }
-                                }}
-                                render={({ field }) => (
-                                    <Input
-                                        id="password-expiry"
-                                        type="number"
-                                        {...field}
-                                    />
-                                )}
-                            />
-                        </div>
-                    </div>
+          <div className="space-y-2">
+            <Label htmlFor="login-attempts">Tentativi di Login Massimi</Label>
+            <Controller
+              name="loginAttempts"
+              control={control}
+              rules={{
+                required: "I tentativi di login sono obbligatori",
+                min: {
+                  value: 1,
+                  message: "I tentativi devono essere almeno 1",
+                },
+                max: {
+                  value: 10,
+                  message: "I tentativi non possono superare 10",
+                },
+              }}
+              render={({ field }) => (
+                <Input id="login-attempts" type="number" {...field} />
+              )}
+            />
+          </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="login-attempts">Tentativi di Login Massimi</Label>
-                        <Controller
-                            name="loginAttempts"
-                            control={control}
-                            rules={{
-                                required: "I tentativi di login sono obbligatori",
-                                min: { value: 1, message: "I tentativi devono essere almeno 1" },
-                                max: { value: 10, message: "I tentativi non possono superare 10" }
-                            }}
-                            render={({ field }) => (
-                                <Input
-                                    id="login-attempts"
-                                    type="number"
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="ip-whitelist">Lista IP Autorizzati</Label>
-                        <Controller
-                            name="ipWhitelist"
-                            control={control}
-                            rules={{
-                                required: "La lista IP è obbligatoria",
-                                pattern: {
-                                    value: /^(\d{1,3}\.){3}\d{1,3}(,\s*(\d{1,3}\.){3}\d{1,3})*$/,
-                                    message: "Inserisci indirizzi IP validi separati da virgola"
-                                }
-                            }}
-                            render={({ field }) => (
-                                <Textarea
-                                    id="ip-whitelist"
-                                    placeholder="192.168.1.1, 10.0.0.1"
-                                    {...field}
-                                />
-                            )}
-                        />
-                        <p className="text-sm text-muted-foreground">Inserisci gli indirizzi IP separati da virgola</p>
-                    </div>
-                </CardContent>
-            </Card>
-        </TabsContent>
-    );
+          <div className="space-y-2">
+            <Label htmlFor="ip-whitelist">Lista IP Autorizzati</Label>
+            <Controller
+              name="ipWhitelist"
+              control={control}
+              rules={{
+                required: "La lista IP è obbligatoria",
+                pattern: {
+                  value: /^(\d{1,3}\.){3}\d{1,3}(,\s*(\d{1,3}\.){3}\d{1,3})*$/,
+                  message: "Inserisci indirizzi IP validi separati da virgola",
+                },
+              }}
+              render={({ field }) => (
+                <Textarea
+                  id="ip-whitelist"
+                  placeholder="192.168.1.1, 10.0.0.1"
+                  {...field}
+                />
+              )}
+            />
+            <p className="text-sm text-muted-foreground">
+              Inserisci gli indirizzi IP separati da virgola
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </TabsContent>
+  );
 };
 
 export default SecuritySettingsTab;
