@@ -94,7 +94,7 @@ const LayoutDesktopTableProps: React.FC<LayoutDesktopTablePropsProps> = ({
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   <div className="font-medium">
-                    {formatCurrency(Number(customer.total_spent))}
+                    {formatCurrency(Number(customer.total_spent) || 0)}
                   </div>
                 </TableCell>
                 <TableCell className="text-right">

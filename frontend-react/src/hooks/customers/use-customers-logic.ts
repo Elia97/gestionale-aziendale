@@ -95,11 +95,11 @@ export function useCustomersLogic() {
           })
         ).unwrap();
         toast.success("Cliente aggiornato con successo!");
-        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
       } else {
         await dispatch(addCustomer(data as Customer)).unwrap();
         toast.success("Cliente aggiunto con successo!");
-        setIsEditModalOpen(false);
+        setIsAddModalOpen(false);
       }
       form.reset();
       setSelectedCustomer(null);
