@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { User } from "@/types";
 import type { RootState } from "../index";
 
+const URL = import.meta.env.VITE_API_URL;
+
 /**
  * Async thunk per il login dell'utente.
  * Invia una richiesta POST al server con le credenziali dell'utente.
@@ -14,9 +16,12 @@ export const loginUser = createAsyncThunk<
   { rejectValue: string }
 >("auth/loginUser", async (credentials, thunkAPI) => {
   try {
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch(`${URL}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
       body: JSON.stringify(credentials),
     });
 
@@ -70,11 +75,12 @@ export const updateUser = createAsyncThunk(
     const state = getState() as RootState;
     const token = state.auth.token;
 
-    const response = await fetch("http://localhost:8000/api/users", {
+    const response = await fetch(`${URL}/users`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify(data),
     });

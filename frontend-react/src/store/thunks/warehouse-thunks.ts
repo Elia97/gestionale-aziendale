@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 import type { Warehouse } from "@/types";
 
+const URL = import.meta.env.VITE_API_URL;
+
 /**
  * Async thunk per il recupero della lista dei magazzini.
  * Invia una richiesta GET al server per ottenere tutti i magazzini.
@@ -18,10 +20,11 @@ export const fetchWarehouses = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch("http://localhost:8000/api/warehouses", {
+      const res = await fetch(`${URL}/warehouses`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
       });
 
@@ -55,11 +58,12 @@ export const addWarehouse = createAsyncThunk<
 
     if (!token) throw new Error("Token mancante");
 
-    const res = await fetch("http://localhost:8000/api/warehouses", {
+    const res = await fetch(`${URL}/warehouses`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify(warehouseData),
     });
@@ -93,17 +97,15 @@ export const updateWarehouse = createAsyncThunk<
 
     if (!token) throw new Error("Token mancante");
 
-    const res = await fetch(
-      `http://localhost:8000/api/warehouses/${warehouseId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(warehouseData),
-      }
-    );
+    const res = await fetch(`${URL}/warehouses/${warehouseId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
+      body: JSON.stringify(warehouseData),
+    });
     if (!res.ok) throw new Error("Errore nell'aggiornamento magazzino");
     return await res.json();
   } catch (err: unknown) {
@@ -132,10 +134,11 @@ export const deleteWarehouse = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(`http://localhost:8000/api/warehouses/${id}`, {
+      const res = await fetch(`${URL}/warehouses/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
         },
       });
       if (!res.ok) throw new Error("Errore nella cancellazione magazzino");
@@ -169,17 +172,15 @@ export const updateStocks = createAsyncThunk<
 
     if (!token) throw new Error("Token mancante");
 
-    const res = await fetch(
-      `http://localhost:8000/api/warehouses/${warehouseId}/stocks`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ stocks }),
-      }
-    );
+    const res = await fetch(`${URL}/warehouses/${warehouseId}/stocks`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
+      body: JSON.stringify({ stocks }),
+    });
     if (!res.ok) throw new Error("Errore nell'aggiornamento giacenze");
     return await res.json();
   } catch (err: unknown) {

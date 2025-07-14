@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
+const URL = import.meta.env.VITE_API_URL;
+
 /**
  * Async thunk per il recupero della lista dei prodotti.
  * Invia una richiesta GET al server per ottenere tutti i prodotti.
@@ -17,10 +19,11 @@ export const fetchProducts = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch("http://localhost:8000/api/products", {
+      const res = await fetch(`${URL}/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
       });
 
@@ -61,11 +64,12 @@ export const addProduct = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch("http://localhost:8000/api/products", {
+      const res = await fetch(`${URL}/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify(productData),
       });
@@ -113,17 +117,15 @@ export const updateProduct = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(
-        `http://localhost:8000/api/products/${productId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updates),
-        }
-      );
+      const res = await fetch(`${URL}/products/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+        body: JSON.stringify(updates),
+      });
       if (!res.ok) throw new Error("Errore nell'aggiornamento prodotto");
       return await res.json();
     } catch (err: unknown) {
@@ -153,15 +155,13 @@ export const deleteProduct = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(
-        `http://localhost:8000/api/products/${productId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${URL}/products/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
       if (!res.ok) throw new Error("Errore nella cancellazione prodotto");
       return productId;
     } catch (err: unknown) {

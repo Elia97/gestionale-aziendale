@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
-// URL base centralizzato (consigliato)
-const BASE_URL = "http://localhost:8000/api/orders";
+const URL = import.meta.env.VITE_API_URL;
 
 /**
  * Async thunk per il recupero della lista degli ordini.
@@ -17,10 +16,11 @@ export const fetchOrders = createAsyncThunk(
       const { auth } = thunkAPI.getState() as RootState;
       if (!auth.token) throw new Error("Token mancante");
 
-      const res = await fetch(BASE_URL, {
+      const res = await fetch(`${URL}/orders`, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
           Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
       });
       if (!res.ok) throw new Error("Errore nel caricamento ordini");
@@ -67,11 +67,12 @@ export const addOrder = createAsyncThunk(
         })),
       };
 
-      const res = await fetch(BASE_URL, {
+      const res = await fetch(`${URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${auth.token}`,
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify(payload),
       });
@@ -124,11 +125,12 @@ export const updateOrder = createAsyncThunk(
         })),
       };
 
-      const res = await fetch(`${BASE_URL}/${orderId}`, {
+      const res = await fetch(`${URL}/orders/${orderId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${auth.token}`,
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify(payload),
       });
@@ -158,10 +160,11 @@ export const deleteOrder = createAsyncThunk(
       const { auth } = thunkAPI.getState() as RootState;
       if (!auth.token) throw new Error("Token mancante");
 
-      const res = await fetch(`${BASE_URL}/${orderId}`, {
+      const res = await fetch(`${URL}/orders/${orderId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${auth.token}`,
+          "ngrok-skip-browser-warning": "true",
         },
       });
       if (!res.ok) throw new Error("Errore nella cancellazione ordine");

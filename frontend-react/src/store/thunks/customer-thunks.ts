@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
+const URL = import.meta.env.VITE_API_URL;
+
 /**
  * Async thunk per il recupero della lista dei clienti.
  * Invia una richiesta GET al server per ottenere tutti i clienti.
@@ -17,10 +19,11 @@ export const fetchCustomers = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch("http://localhost:8000/api/customers", {
+      const res = await fetch(`${URL}/customers`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
       });
 
@@ -60,11 +63,12 @@ export const addCustomer = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch("http://localhost:8000/api/customers", {
+      const res = await fetch(`${URL}/customers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify(customerData),
       });
@@ -96,15 +100,13 @@ export const deleteCustomer = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(
-        `http://localhost:8000/api/customers/${customerId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${URL}/customers/${customerId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
       if (!res.ok) throw new Error("Errore nella cancellazione cliente");
       return customerId;
     } catch (err: unknown) {
@@ -148,11 +150,12 @@ export const updateCustomer = createAsyncThunk(
 
       if (!token) throw new Error("Token mancante");
 
-      const res = await fetch(`http://localhost:8000/api/customers/${id}`, {
+      const res = await fetch(`${URL}/customers/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify(updates),
       });

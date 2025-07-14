@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
+const URL = import.meta.env.VITE_API_URL;
+
 // Interfaccia per le impostazioni utente (dati dal/al backend)
 interface UserSettingsData {
   language: string;
@@ -41,11 +43,12 @@ export const fetchUserSettings = createAsyncThunk<
     const token = state.auth.token;
 
     if (!token) throw new Error("Token mancante");
-    const response = await fetch("http://localhost:8000/api/users/settings", {
+    const response = await fetch(`${URL}/users/settings`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
       },
     });
 
@@ -82,11 +85,12 @@ export const updateUserSettings = createAsyncThunk<
 
     if (!token) throw new Error("Token mancante");
 
-    const response = await fetch("http://localhost:8000/api/users/settings", {
+    const response = await fetch(`${URL}/users/settings`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify(settings),
     });
