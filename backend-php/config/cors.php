@@ -21,7 +21,7 @@ return [
 
     'allowed_origins' => [
         'http://localhost:5173',  // Porta default di Vite
-        'https://f3ee36f16b6e.ngrok-free.app'
+        'https://ges-aziendale.netlify.app'
     ],
 
     'allowed_headers' => ['*'],
