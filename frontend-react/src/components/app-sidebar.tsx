@@ -24,7 +24,7 @@ import {
   SidebarMenuButton,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/lib/sidebar-context";
 
 type ActivePage =
   | "/"
@@ -39,7 +39,7 @@ type ActivePage =
  * Gestisce la navigazione tra le pagine e il logout dell'utente.
  * @returns Il componente della barra laterale con le voci di menu e il pulsante di logout.
  */
-const AppSideBar: React.FC = () => {
+export function AppSideBar(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState<ActivePage>("/");
@@ -107,6 +107,4 @@ const AppSideBar: React.FC = () => {
       </SidebarFooter>
     </Sidebar>
   );
-};
-
-export default AppSideBar;
+}

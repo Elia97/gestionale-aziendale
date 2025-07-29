@@ -34,7 +34,7 @@ export default function AppRoutes() {
           </Route>
         </Route>
       </Routes>
-      <Toaster position="bottom-right" richColors closeButton />
+      <Toaster position="bottom-right" richColors closeButton duration={2000} />
     </BrowserRouter>
   );
 }
