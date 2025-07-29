@@ -1,6 +1,36 @@
 -- Seeder per la tabella stocks
 -- Nota: Questo seeder presuppone che esistano già prodotti e magazzini nel database
+-- Genera stock per ogni combinazione prodotto-magazzino utilizzando CTE
 
+WITH
+    ProductWarehouseCombinations AS (
+        -- Genera combinazioni casuali di prodotti e magazzini
+        SELECT
+            p.id as product_id,
+            w.id as warehouse_id,
+            ROW_NUMBER() OVER (
+                ORDER BY NEWID()
+            ) as combination_num
+        FROM (
+                SELECT id, ROW_NUMBER() OVER (
+                        ORDER BY NEWID()
+                    ) as rn
+                FROM dbo.products
+            ) p
+            CROSS JOIN (
+                SELECT id, ROW_NUMBER() OVER (
+                        ORDER BY NEWID()
+                    ) as rn
+                FROM dbo.warehouses
+            ) w
+        WHERE
+            -- Non tutti i prodotti sono in tutti i magazzini (70% di probabilità)
+            (
+                ABS(
+                    CHECKSUM(NEWID()) + p.id + w.id
+                ) % 100
+            ) < 70
+    )
 INSERT INTO
     dbo.stocks (
         product_id,
@@ -9,136 +39,32 @@ INSERT INTO
         created_at,
         updated_at
     )
-VALUES (
-        1,
-        1,
-        150,
-        GETDATE(),
-        GETDATE()
-    ),
+SELECT
+    product_id,
+    warehouse_id,
+    -- Quantità casuale tra 10 e 500
     (
-        1,
-        2,
-        75,
-        GETDATE(),
+        ABS(
+            CHECKSUM(NEWID()) + combination_num
+        ) % 490
+    ) + 10 as quantity,
+    -- Date casuali negli ultimi 30 giorni
+    DATEADD(
+        DAY,
+        - (
+            ABS(
+                CHECKSUM(NEWID()) + combination_num * 2
+            ) % 30
+        ),
         GETDATE()
-    ),
-    (
-        1,
-        3,
-        200,
-        GETDATE(),
+    ) as created_at,
+    DATEADD(
+        DAY,
+        - (
+            ABS(
+                CHECKSUM(NEWID()) + combination_num * 3
+            ) % 30
+        ),
         GETDATE()
-    ),
-    (
-        2,
-        1,
-        80,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        2,
-        4,
-        120,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        2,
-        5,
-        50,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        3,
-        2,
-        300,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        3,
-        6,
-        180,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        3,
-        7,
-        90,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        4,
-        1,
-        45,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        4,
-        3,
-        110,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        5,
-        2,
-        220,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        5,
-        8,
-        85,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        6,
-        4,
-        160,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        6,
-        6,
-        95,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        7,
-        5,
-        130,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        7,
-        7,
-        70,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        8,
-        1,
-        55,
-        GETDATE(),
-        GETDATE()
-    ),
-    (
-        8,
-        8,
-        145,
-        GETDATE(),
-        GETDATE()
-    );
+    ) as updated_at
+FROM ProductWarehouseCombinations;

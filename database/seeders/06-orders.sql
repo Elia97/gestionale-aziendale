@@ -186,21 +186,10 @@ INSERT INTO
         created_at,
         updated_at
     )
-SELECT (
-        SELECT TOP 1 id
-        FROM customers
-        ORDER BY NEWID()
-    ) as customer_id,
-    (
-        SELECT TOP 1 id
-        FROM users
-        ORDER BY NEWID()
-    ) as user_id,
-    (
-        SELECT TOP 1 status
-        FROM StatusOptions
-        ORDER BY NEWID()
-    ) as status,
+SELECT
+    c.id as customer_id,
+    u.id as user_id,
+    s.status,
     ROUND(
         20.00 + (ABS(CHECKSUM(NEWID())) % 1980),
         2
@@ -215,4 +204,41 @@ SELECT (
         - (ABS(CHECKSUM(NEWID())) % 90) + (ABS(CHECKSUM(NEWID())) % 7),
         GETDATE()
     ) as updated_at
-FROM Numbers;
+FROM Numbers n
+    CROSS JOIN (
+        SELECT id, ROW_NUMBER() OVER (
+                ORDER BY NEWID()
+            ) as rn
+        FROM customers
+    ) c
+    CROSS JOIN (
+        SELECT id, ROW_NUMBER() OVER (
+                ORDER BY NEWID()
+            ) as rn
+        FROM users
+    ) u
+    CROSS JOIN (
+        SELECT status, ROW_NUMBER() OVER (
+                ORDER BY NEWID()
+            ) as rn
+        FROM StatusOptions
+    ) s
+WHERE
+    c.rn = (
+        (n.num - 1) % (
+            SELECT COUNT(*)
+            FROM customers
+        )
+    ) + 1
+    AND u.rn = (
+        (n.num * 2 - 1) % (
+            SELECT COUNT(*)
+            FROM users
+        )
+    ) + 1
+    AND s.rn = (
+        (n.num * 3 - 1) % (
+            SELECT COUNT(*)
+            FROM StatusOptions
+        )
+    ) + 1;
